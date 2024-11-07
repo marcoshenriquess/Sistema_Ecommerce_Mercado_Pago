@@ -14,7 +14,7 @@ $List = $ProdutosCont->ListaProdutoControll();
 <!-- End of Sidebar -->
 
 <!-- Content Wrapper -->
-<div id="content-wrapper" class="d-flex flex-column">
+<div id="content-wrapper">
 
     <!-- Main Content -->
     <div id="content">

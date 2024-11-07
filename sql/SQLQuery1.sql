@@ -116,3 +116,6 @@ select * from Tipos_Users;
 select * from Tipos_Produtos;
 select * from produtos;
 select * from usuarios;
+
+
+SELECT * FROM usuarios WHERE email = 'ana.souza@email.com' && senha = 'senha101';

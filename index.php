@@ -1,5 +1,5 @@
 <?php
-header("Location: /project/back/index.html");
+header("Location: /index.html");
 exit;
 
 

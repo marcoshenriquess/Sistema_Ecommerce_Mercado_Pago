@@ -1,4 +1,5 @@
-<?php include_once('./menu.php');
+<?php 
+
 
 require_once('C:/xampp/htdocs/project/back/models/produto.php');
 require_once('C:/xampp/htdocs/project/back/controller/produtoController.php');
@@ -31,6 +32,7 @@ if (isset($_POST['cadastrar'])) {
     
 }
 
+include_once('./menu.php');
 ?>
 
 

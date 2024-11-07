@@ -1,5 +1,4 @@
 <?php 
-include_once('./menu.php');
 
 require_once('C:/xampp/htdocs/project/back/models/produto.php');
 require_once('C:/xampp/htdocs/project/back/controller/produtoController.php');
@@ -32,6 +31,7 @@ if (isset($_POST['editar'])) {
     $produtoDAO->AlterarProdutoControll($produtos, $_GET['id']);
     
 }
+include_once('./menu.php');
 
 ?>
 

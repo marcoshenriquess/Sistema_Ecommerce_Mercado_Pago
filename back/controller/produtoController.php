@@ -15,10 +15,12 @@ class ProdutoControll{
     public function CadastroProdutoControll($produtos)      {
         $AuxProduto = new ProdutoModel();
         $AuxProduto->CadastrarProdutos($produtos);
+        header('Location: produtos.php');
     }
     public function AlterarProdutoControll($produtos, $id)      {
         $AuxProduto = new ProdutoModel();
         $AuxProduto->AlterarProduto($produtos, $id);
+        header('Location: produtos.php');
     }
     public function ExluirProdutoControll( $id)      {
         $AuxProduto = new ProdutoModel();

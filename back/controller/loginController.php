@@ -2,6 +2,7 @@
 
 require_once('C:/xampp/htdocs/project/back/models/usuario.php');
 
+session_start();
 class LoginControll {
 
 
@@ -10,7 +11,10 @@ class LoginControll {
 
     public function login($email, $senha) {
         $Aux = new UsuarioModel();
-        $Aux->LoginModel($email, $senha);
+        $status = $Aux->LoginModel($email, $senha);
+       
+        
+        
     }
 }
 
