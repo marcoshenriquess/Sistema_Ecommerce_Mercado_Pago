@@ -3,7 +3,7 @@
 
 
 
-require_once('C:/xampp/htdocs/project/models/cidade.php');
+require_once(dirname(__DIR__) ."/models/cidade.php");
 
 class CidadeControll {
     public function listarCidades() {

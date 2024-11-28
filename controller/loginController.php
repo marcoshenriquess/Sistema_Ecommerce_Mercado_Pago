@@ -3,7 +3,7 @@
 
 
 
-require_once('C:/xampp/htdocs/project/models/usuario.php');
+require_once(dirname(__DIR__) ."/models/usuario.php");
 
 class LoginControll {
     

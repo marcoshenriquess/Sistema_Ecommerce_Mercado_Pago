@@ -63,7 +63,7 @@ if (isset($_POST['cadastrar'])) {
             echo "<script>alert('Senhas não conferem!');</script>";
         }
     } else {
-        $msgErr = "PREENCHA OS CAMPOS OBRIGATÓRIOS";
+        echo "PREENCHA OS CAMPOS OBRIGATÓRIOS";
     }
 }
 

@@ -1,7 +1,7 @@
 <?php
 
 
-require_once("C:/xampp/htdocs/project/database/banco.php");
+require_once(dirname(__DIR__) . "/database/banco.php");
 
 
 class ProdutoModel
@@ -20,10 +20,11 @@ class ProdutoModel
     private $prod_dt_ini;
     private $prod_status;
     private $prod_dt_exc;
+    private $QuantidadeVenda;
 
     private $conn;
 
-    public function __construct($prod_id = null, $prod_nome = null, $prod_tipo_prod = null, $prod_custo = null, $prod_venda = null, $prod_descricao = null, $prod_quantidade = null, $prod_desconto = null, $prod_imagem = null, $prod_usuario = null,$prod_dt_ini = null, $prod_status = null, $prod_dt_exc = null)
+    public function __construct($prod_id = null, $prod_nome = null, $prod_tipo_prod = null, $prod_custo = null, $prod_venda = null, $prod_descricao = null, $prod_quantidade = null, $prod_desconto = null, $prod_imagem = null, $prod_usuario = null, $prod_dt_ini = null, $prod_status = null, $prod_dt_exc = null)
     {
         $this->prod_id = $prod_id;
         $this->prod_nome = $prod_nome;
@@ -79,7 +80,7 @@ class ProdutoModel
         return $this->prod_venda;
     }
     public function setPrecoVenda($prod_venda)
-    {   
+    {
         $this->prod_venda = $prod_venda;
     }
     public function getDescricao()
@@ -152,23 +153,30 @@ class ProdutoModel
         $this->prod_dt_exc = $prod_dt_exc;
     }
 
-
-
+    public function getQuantidadeVenda()
+    {
+        return $this->QuantidadeVenda;
+    }
+    public function setQuantidadeVenda($QuantidadeVenda)
+    {
+        $this->QuantidadeVenda = $QuantidadeVenda;
+    }
 
     public function ListaProduto()
     {
-        try{
+        try {
             $db = new Database();
             $this->conn = $db->getConnection();
-    
-    
+
+
             $sql = " SELECT prod_id,
                         produtos.prod_nome, 
                         Tipos_Produtos.tipo_prod_nome,
                         produtos.prod_descricao, 
                         produtos.prod_custo, 
                         produtos.prod_venda, 
-                        produtos.prod_desconto, 
+                        produtos.prod_quantidade,
+                        produtos.prod_desconto,
                         produtos.prod_imagem, 
                         produtos.prod_dt_ini, 
                         usuario.usu_nome AS vendedor_nome
@@ -183,7 +191,7 @@ class ProdutoModel
             $stmt = $this->conn->query($sql);
             $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
-    
+
             return $produtos;
         } catch (PDOException $e) {
             return $e->getMessage();
@@ -194,7 +202,7 @@ class ProdutoModel
     public function ListaProdutoPorId($id)
     {
 
-        try{
+        try {
             $db = new Database();
             $this->conn = $db->getConnection();
 
@@ -233,11 +241,11 @@ class ProdutoModel
 
     public function ObterProduto($id)
     {
-        try{
+        try {
             $db = new Database();
             $this->conn = $db->getConnection();
 
-            $sql = ' SELECT produtos.prod_nome, produtos.prod_tipo, produtos.prod_descricao, produtos.prod_custo, produtos.prod_venda, produtos.prod_desconto, produtos.prod_quantidade, produtos.prod_imagem FROM produtos
+            $sql = ' SELECT prod_id, produtos.prod_nome, produtos.prod_tipo, produtos.prod_descricao, produtos.prod_custo, produtos.prod_venda, produtos.prod_desconto, produtos.prod_quantidade, produtos.prod_imagem FROM produtos
                         INNER JOIN Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod  
                         INNER JOIN usuario ON produtos.prod_usu_cad = usuario.usu_id
                         WHERE produtos.prod_id = :id AND prod_status = 1;
@@ -256,7 +264,7 @@ class ProdutoModel
 
     public function CadastrarProdutos(ProdutoModel $dados)
     {
-        try{
+        try {
             // var_dump($dados);exit();
 
             $db = new Database();
@@ -278,7 +286,7 @@ class ProdutoModel
             // var_dump($stmt->execute()); exit();
             $stmt->execute();
             $stmt->closeCursor();
-        } catch(Exception $e){
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -299,29 +307,74 @@ class ProdutoModel
             $stmt->bindValue(":descricao", $dados->getDescricao(), PDO::PARAM_STR);
             $stmt->bindValue(":desconto", $dados->getDesconto(), PDO::PARAM_STR);
             $stmt->bindValue(":quantidade", $dados->getQuantidade(), PDO::PARAM_STR);
-            $stmt->bindValue(":imagem", $dados->getImagem(), PDO::PARAM_STR);
+            if($dados->getImagem() != null){
+                $stmt->bindValue(":imagem", $dados->getImagem(), PDO::PARAM_STR);
+            } else {
+                $produto = $this->ObterProduto($idProd);
+                $stmt->bindValue(":imagem", $produto['prod_imagem'], PDO::PARAM_STR);
+            }
             $stmt->bindValue(":id_vendedor", $idUsu, PDO::PARAM_STR);
             $stmt->execute();
             $stmt->closeCursor();
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             return $e->getMessage();
         }
     }
 
     public function ExcluirProduto($id)
     {
-        try{
+        try {
             $db = new Database();
             $this->conn = $db->getConnection();
-    
-    
-            $sql = 'UPDATE produtos SET	prod_status = 0 WHERE prod_id = :id';
+
+            $sql = 'UPDATE produtos SET	prod_status = 0, prod_dt_exc = getDate() WHERE prod_id = :id';
             $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_STR);
+            $stmt->execute();
+
+            $stmt->closeCursor();
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+
+    public function VerificarEstoque($id, $qtde)
+    {
+        try {
+            $db = new Database();
+            $this->conn = $db->getConnection();
+
+            $sql = 'SELECT prod_nome, prod_quantidade, 
+                    (CASE WHEN prod_quantidade > :qtde
+                    THEN 1 ELSE 0 END) 
+                    AS STATUS_PROD FROM produtos WHERE prod_id = :id;';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':qtde', $qtde, PDO::PARAM_INT);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
-    
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
-        } catch(PDOException $e) {
+
+            return $result;
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function AtualizarQuantidade($id, $qntde){
+        try {
+            // var_dump('AQUIII: ',$qntde);
+            $db = new Database();
+            $this->conn = $db->getConnection();
+
+            $sql = 'UPDATE produtos set prod_quantidade = :qntdeAlterar where prod_id = :id;';
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->bindValue(':qntdeAlterar', $qntde, PDO::PARAM_INT);
+            $stmt->execute();
+            $stmt->closeCursor();
+        } catch (PDOException $e) {
             echo $e->getMessage();
         }
     }

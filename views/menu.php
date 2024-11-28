@@ -1,7 +1,6 @@
 <?php
 // include_once('C:/xampp/htdocs/project/models/permissao.php');
 
-session_start();
 //var_dump($_SESSION['usuario_taramps']);
 if (isset($_REQUEST['sair'])) {
     // ***IMPLEMENTAR VERIFICAÇÃO DE SESSÕES DE PROCEDIMENTOS FUTUROS
@@ -11,9 +10,6 @@ if (isset($_REQUEST['sair'])) {
     //DESTRUIR SESSÕES
     session_destroy();
 }
-
-
-
 
 require_once('../controller/TipoUsuarioController.php');
 require_once('../controller/logoutController.php');
@@ -35,14 +31,16 @@ if (isset($_SESSION['usuario_logado'])) {
             </ul>
 
             <ul class="navbar-nav ml-auto">
-                <form class="d-flex dropdown no-arrow align-items-center">
-                    <button class="btn btn-light h-50" type="submit">
-                        <i class="bi-cart-fill me-1"></i>
-                        Cart
-                        <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-                    </button>
-                </form>
-                <li class="nav-item dropdown no-arrow">
+                <li class="nav-item dropdown no-arrow m-2 d-flex align-items-center">
+                    <a class="d-flex dropdown no-arrow align-items-center text-decoration-line-through" href="carrinho.php">
+                        <button class="btn btn-light h-50" type="submit">
+                            <i class="bi-cart-fill me-1"></i>
+                            Cart
+                        </button>
+                    </a>
+                </li>
+                <div class="topbar-divider d-none d-sm-block"></div>
+                <li class="nav-item dropdown no-arrow  x-5 d-flex align-items-center">
                     <?php
                     if (isset($_SESSION['usuario_logado'])) {
                     ?>
@@ -64,7 +62,7 @@ if (isset($_SESSION['usuario_logado'])) {
                     <?php
                     } else {
                     ?>
-                        <a href="login.php">Login</a>
+                        <a class="nav-link active" href="login.php">Login &nbsp<i class="fas fa-sign-in-alt"></i></a>
                     <?php
                     }
                     ?>
@@ -89,13 +87,17 @@ if (isset($_SESSION['usuario_logado'])) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button name="sair" id="sair" type="button" class="btn btn-primary" onclick="window.location.href = 'logout.php';">Sair</button>
+                <button name="sair" id="sair" type="button" class="btn btn-primary" onclick="SairAll()">Sair</button>
             </div>
         </div>
     </div>
 </div>
-
-
+<script>
+function SairAll(){
+    localStorage.clear();
+    window.location.href = "logout.php";
+}
+</script>
 <!-- Bootstrap core JavaScript-->
 <script src="../public/vendor/jquery/jquery.min.js"></script>
 <script src="../public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

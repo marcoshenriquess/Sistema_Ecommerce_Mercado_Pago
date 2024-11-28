@@ -3,7 +3,7 @@
 
 
 
-require_once('C:/xampp/htdocs/project/models/estado.php');
+require_once(dirname(__DIR__) ."/models/estado.php");
 
 class EstadoControll {
     public function listarEstados() {

@@ -1,6 +1,6 @@
 <?php
 
-require_once('C:/xampp/htdocs/project/database/banco.php');
+require_once(dirname(__DIR__) ."/database/banco.php");
 class UsuarioModel
 {
     private $usu_id;
@@ -182,7 +182,11 @@ class UsuarioModel
             $db = new Database();
             $this->conn = $db->getConnection();
             // var_dump($senha);exit();
-            $sql = 'SELECT * FROM usuario WHERE usu_email = :email AND usu_status = 1';
+            $sql = 'SELECT * FROM usuario 
+            INNER JOIN Tipos_Users ON usuario.usu_tipo = Tipos_Users.id_tipo_user
+            JOIN Cidade ON usuario.usu_cidade = Cidade.id_cidade
+            JOIN Estado ON usuario.usu_estado = Estado.id_estado
+            WHERE usu_email = :email AND usu_status = 1';
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(':email', $email, PDO::PARAM_STR);
             // $stmt->bindValue(':senha', $senha, PDO::PARAM_STR);
@@ -292,6 +296,8 @@ class UsuarioModel
 
             $sql = 'SELECT * FROM usuario 
             INNER JOIN Tipos_Users ON usuario.usu_tipo = Tipos_Users.id_tipo_user
+            JOIN Cidade ON usuario.usu_cidade = Cidade.id_cidade
+            JOIN Estado ON usuario.usu_estado = Estado.id_estado
             WHERE usu_id = ? AND usu_status = 1;';
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([$id]);
@@ -349,7 +355,7 @@ class UsuarioModel
             $db = new Database();
             $this->conn = $db->getConnection();
 
-            $sql = 'UPDATE usuario SET usu_status = 0 WHERE usu_id = :id';
+            $sql = 'UPDATE usuario SET usu_status = 0, usu_dt_exc = getDate() WHERE usu_id = :id';
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(':id', $id);
             $stmt->execute();

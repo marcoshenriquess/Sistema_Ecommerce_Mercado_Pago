@@ -1,5 +1,16 @@
 USE LOJA_ESPORTIVA;
 
+
+-- Criação da tabela Carrinho
+CREATE TABLE Carrinho(
+	car_id INT IDENTITY(1,1) PRIMARY KEY,
+	car_valor DECIMAL(10, 2) NOT NULL,
+	car_usu_id INT NOT NULL,
+	car_prod_id INT NOT NULL,
+	FOREIGN KEY (car_usu_id) REFERENCES usuario(usu_id),
+	FOREIGN KEY (car_prod_id) REFERENCES produtos(prod_id),
+);
+
 -- Criação da tabela Tipos_Users
 CREATE TABLE Tipos_Users (
     id_tipo_user INT IDENTITY(1,1) PRIMARY KEY,
@@ -11,11 +22,24 @@ CREATE TABLE Tipos_Produtos (
     id_tipo_prod INT IDENTITY(1,1) PRIMARY KEY,
     tipo_prod_nome VARCHAR(90) NOT NULL
 );
+
+-- Criação da tabela Estado
 CREATE TABLE Estado (
     id_estado INT IDENTITY(1,1) PRIMARY KEY,
     nome_estado VARCHAR(2) NOT NULL
 );
 
+CREATE TABLE Venda(
+	ven_id INT IDENTITY(1,1) PRIMARY KEY,
+	ven_prod_id INT NOT NULL,
+	ven_usu_id INT NOT NULL,
+	ven_quantidade INT NOT NULL,
+	ven_valor DECIMAL(10,2) NOt NULL,
+	FOREIGN KEY (ven_usu_id) REFERENCES usuario(usu_id),
+	FOREIGN KEY (ven_prod_id) REFERENCES produtos(prod_id),
+);
+
+-- Criação da tabela Cidade
 CREATE TABLE Cidade (
     id_cidade INT IDENTITY(1,1) PRIMARY KEY,
     nome_cidade VARCHAR(100) NOT NULL
@@ -36,22 +60,12 @@ CREATE TABLE usuario (
     usu_cidade int NOT NULL,
     usu_complemento VARCHAR(150) NOT NULL,
 	usu_dt_ini DATE NOT NULL,
-	usu_hr_ini time NOT NULL,
 	usu_usu_status bit NOT NULL,
 	usu_dt_exc DATE NULL,
-	usu_hr_exc time NULL,
     FOREIGN KEY (usu_tipo) REFERENCES Tipos_Users(id_tipo_user),
 	FOREIGN KEY (usu_estado) REFERENCES Estado(id_estado),
 	FOREIGN KEY (usu_cidade) REFERENCES Cidade(id_cidade),
 );
-
-CREATE TABLE usuarios (
-    usu_id INT IDENTITY(1,1) PRIMARY KEY,
-    usu_nome VARCHAR(150) NOT NULL,
-    usu_senha VARCHAR(150) NOT NULL
-);
-
-INSERT INTO usuarios (usu_nome, usu_senha) VALUES ('admin', 'admin0000');
 
 -- Criação da tabela Produtos com chave estrangeira para Tipos_Produtos e Usuarios
 CREATE TABLE produtos (
@@ -72,32 +86,19 @@ CREATE TABLE produtos (
     FOREIGN KEY (prod_tipo) REFERENCES Tipos_Produtos(id_tipo_prod) ON DELETE SET NULL
 );
 
-SELECT * FROM LOJA_ESPORTIVA.dbo.usuario;
-SELECT * FROM LOJA_ESPORTIVA.dbo.produtos;
 
-DELETE FROM usuario WHERE usu_id = 10
-
-SELECT produtos.*, 
-       usuarios.nome AS vendedor_nome
-FROM produtos 
-INNER JOIN usuarios ON produtos.id_vendedor = usuarios.id_usuario 
-WHERE produtos.id_produto = 4;
-
-
-UPDATE produtos SET	nome = 'Bola de Futebol', tipo_prod = 'Futebol', preco_custo = 412.26, preco_venda = 500.00, descricao = 'Bola da Nike com amortecimento tecnologico', desconto = null, imagem = 'teste-teste.jpg', id_vendedor = 2 WHERE id_produto = 4; 
-
-select * from Tipos_Users;
-
--- Inserindo registros na tabela usuarios
-
+-- Inserindo registros na tabela Tipos_users
 insert into Tipos_Users (tipo_user_nome) values ('Administrador');
 insert into Tipos_Users (tipo_user_nome) values ('Vendedor');
 insert into Tipos_Users (tipo_user_nome) values ('Cliente');
 
+
+
+-- Inserindo registros na tabela usuarios
+-- Cliente 1
 INSERT INTO usuario 
 (usu_nome, usu_cpf, usu_telefone, usu_email, usu_senha, usu_tipo, usu_endereco, usu_numero, usu_estado, usu_cidade, usu_complemento, usu_dt_ini, usu_status, usu_dt_exc) 
 VALUES 
--- Cliente 1
 ('Carlos Silva', '12345678901', '(11) 91234-5678', 'carlos.silva@gmail.com', 'senhaSegura123', 2, 
 'Rua das Flores', '100', 25, 1, 'Apto 101', 
 GETDATE(), 1, NULL);
@@ -126,13 +127,11 @@ VALUES
 'Rua das Palmeiras', '50', 5, 4, 'Perto da praça', 
 GETDATE(), 1, NULL);
 
-
-
-
+-- Função usada para Login
 SELECT * FROM usuario WHERE usu_email = 'joao.souza@hotmail.com' AND usu_senha = 'minhaSenha789' AND usu_status = 1;
 
-select *from clientes;
--- Inserindo registros na tabela produtos
+
+-- Inserindo registros na tabela produtos e os Tipos
 
 INSERT INTO Tipos_Produtos (tipo_prod_nome) VALUES ('Roupas Esportivas');
 INSERT INTO Tipos_Produtos (tipo_prod_nome) VALUES ('Blusas');
@@ -160,46 +159,10 @@ VALUES ('Tênis de Corrida', 5, 200.00, 300.00, 'Tênis de corrida com amortecimen
 INSERT INTO produtos (nome, tipo_prod, preco_custo, preco_venda, descricao, desconto, imagem, id_vendedor) 
 VALUES ('Mochila para Hiking', 7, 80.00, 120.00, 'Mochila resistente, ideal para caminhadas e aventuras ao ar livre.', NULL, 'mochila_hiking.jpg', 1);
 
-select * from Tipos_Users;
-select * from Tipos_Produtos;
-select * from usuarios;
-select * from produtos;
-
-
-SELECT * FROM usuarios WHERE email = 'marcosmarcondes700@gmail.com' AND senha = '@tar2024'
-
-
-SELECT 
-    produtos.nome AS nome_prod, 
-    Tipos_Produtos.tipo_prod_nome,
-    produtos.descricao, 
-    produtos.preco_custo, 
-    produtos.preco_venda, 
-    produtos.desconto, 
-    produtos.imagem, 
-    usuarios.nome AS vendedor_nome
-FROM 
-    produtos
-INNER JOIN 
-    Tipos_Produtos ON produtos.tipo_prod = Tipos_Produtos.id_tipo_prod  
-INNER JOIN 
-    usuarios ON produtos.id_vendedor = usuarios.id_usuario;
-
-
-SELECT * FROM usuarios WHERE email = 'ana.souza@email.com' && senha = 'senha101';
-
-
-SELECT produtos.nome as nome_prod, produtos.tipo_prod, produtos.descricao, produtos.preco_custo, produtos.preco_venda, produtos.desconto, produtos.imagem, usuarios.nome as vendedor_nome FROM produtos
-                    INNER JOIN Tipos_Produtos ON produtos.tipo_prod = Tipos_Produtos.id_tipo_prod  
-                    INNER JOIN usuarios ON produtos.id_vendedor = usuarios.id_usuario
-                    WHERE produtos.id_produto = 13;
-
-
-					UPDATE produtos SET	nome = 'TESTE', tipo_prod = 1, preco_custo = '123', preco_venda = '123', descricao = 'g', desconto = '0', imagem = 'teste.png', id_vendedor = 1 WHERE id_produto = 13;
 
 
 
-
+-- INSERINDO DADOS NA TABELA ESTADO E CIDADE
 
 INSERT INTO Estado (nome_estado) VALUES 
 ('AC'), -- Acre
@@ -229,9 +192,6 @@ INSERT INTO Estado (nome_estado) VALUES
 ('SP'), -- São Paulo
 ('SE'), -- Sergipe
 ('TO'); -- Tocantins
-
-
-
 
 
 -- Cidades de São Paulo (SP)
@@ -312,3 +272,67 @@ SELECT usu_id,usu_nome,usu_email,Tipos_Users.tipo_user_nome,Cidade.nome_cidade,E
         INNER JOIN Estado ON usuario.usu_estado = Estado.id_Estado;
 
 		select * from produtos;
+
+
+select * from usuario;
+
+
+SELECT Cidade.nome_cidade, COUNT(*) as NumeroClientes FROM usuario
+INNER JOIN Cidade ON usuario.usu_cidade = Cidade.id_cidade
+GROUP BY Cidade.nome_cidade;
+
+
+SELECT Tipos_Produtos.tipo_prod_nome, COUNT(*) as Quantidade_de_produtos FROM produtos
+LEFT JOIN Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod
+where prod_status = 1
+GROUP BY Tipos_Produtos.tipo_prod_nome;
+
+select prod_nome, prod_tipo, Tipos_Produtos.tipo_prod_nome from produtos 
+LEFT JOIN Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod;
+
+SELECT * FROM produtos INNER JOIN usuario ON prod_usu_cad = usuario.usu_id;
+SELECT * FROM produtos FULL JOIN usuario ON prod_usu_cad = usuario.usu_id;
+SELECT * FROM produtos LEFT JOIN usuario ON prod_usu_cad = usuario.usu_id;
+SELECT * FROM produtos RIGHT JOIN usuario ON prod_usu_cad = usuario.usu_id;
+
+SELECT prod_nome, prod_quantidade 
+            FROM produtos 
+            WHERE prod_quantidade >= 11 AND prod_id = 30;
+
+SELECT prod_nome, prod_quantidade, 
+                    (CASE WHEN prod_quantidade >= 50
+                    THEN 1 ELSE 0 END) 
+                    AS STATUS_PROD FROM produtos WHERE prod_id = 29;
+
+
+
+select * from produtos where prod_id = 31;
+
+UPDATE produtos set prod_quantidade = 4 where prod_id = 30;
+
+INSERT INTO Venda (ven_prod_id, ven_usu_id, ven_quantidade, ven_valor) values (29,12,5,100);
+
+SELECT 
+    prod_nome, 
+    SUM(ven_quantidade) AS Quantidade, 
+    usu_nome 
+FROM 
+    venda
+INNER JOIN 
+    produtos 
+    ON venda.ven_prod_id = produtos.prod_id 
+INNER JOIN 
+    usuario 
+    ON venda.ven_usu_id = usuario.usu_id
+GROUP BY 
+    prod_nome, usu_nome;
+
+
+select * from venda;
+DELETE FROM venda where ven_usu_id = 12;
+
+
+SELECT prod_id, produtos.prod_nome, produtos.prod_tipo, produtos.prod_descricao, produtos.prod_custo, produtos.prod_venda, produtos.prod_desconto, produtos.prod_quantidade, produtos.prod_imagem FROM produtos
+                        INNER JOIN Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod  
+                        INNER JOIN usuario ON produtos.prod_usu_cad = usuario.usu_id
+                        WHERE produtos.prod_id = 31 AND prod_status = 1;

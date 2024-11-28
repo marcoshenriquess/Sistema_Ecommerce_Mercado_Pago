@@ -1,6 +1,6 @@
 <?php 
     
-    require_once('C:\xampp\htdocs\project\models\tipousuarios.php');
+    require_once(dirname(__DIR__) ."/models/tipousuarios.php");
 
     class TipoUserControll{
         public function __construct(){

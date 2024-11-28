@@ -1,18 +1,17 @@
 <?php
 
 include_once("../../models/permissao.php");
+require_once("../../models/produto.php");
+require_once("../../controller/produtoController.php");
+require_once("../../controller/TipoProdutoController.php");
 include_once('./menu.php');
-
-require_once('C:/xampp/htdocs/project/models/produto.php');
-require_once('C:/xampp/htdocs/project/controller/produtoController.php');
-require_once("C:/xampp/htdocs/project/controller/TipoProdutoController.php");
 
 $produtoDAO = new TipoProdutoController();
 $TipoProd = $produtoDAO->ListarTipoProduto();
 
 
 if (isset($_POST['cadastrar'])) {
-    if(!isset($_POST['nome'],$_POST['tipo_prod'],$_POST['preco_custo'],$_POST['preco_venda'],$_POST['descricao'],$_POST['quantidade'],$_POST['desconto'])){
+    if(isset($_POST['nome'],$_POST['tipo_prod'],$_POST['preco_custo'],$_POST['preco_venda'],$_POST['descricao'],$_POST['quantidade'],$_POST['desconto'])){
         $produtos = new ProdutoModel(
             null,
             $_POST['nome'],

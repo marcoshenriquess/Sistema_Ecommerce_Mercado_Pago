@@ -1,6 +1,6 @@
 <?php
 
-    require_once("C:/xampp/htdocs/project/models/produto.php");
+    require_once(dirname(__DIR__) ."/models/produto.php");
 
 
 class ProdutoControll{
@@ -36,6 +36,10 @@ class ProdutoControll{
         $AuxProduto = new ProdutoModel();
         $Produtos = $AuxProduto->ObterProduto($id);
         return $Produtos;
+    }
+    public function AtualizarQuantidade($id, $qtde) {
+        $AuxProduto = new ProdutoModel();
+        $AuxProduto->AtualizarQuantidade($id, $qtde);
     }
 }
 

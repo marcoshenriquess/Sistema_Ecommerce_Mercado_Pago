@@ -1,6 +1,6 @@
 <?php
 
-require_once('C:/xampp/htdocs/project/database/banco.php');
+require_once(dirname(__DIR__) ."/database/banco.php");
 
 class TipoProdutoModel{
     private $id_tipo_produto;

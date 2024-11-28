@@ -1,6 +1,6 @@
 <?php
 
-    require_once('C:/xampp/htdocs/project/models/tipoProdutos.php');
+    require_once(dirname(__DIR__) ."/models/tipoProdutos.php");
 
     class TipoProdutoController{
         public function __construct(){

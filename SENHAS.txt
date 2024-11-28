@@ -1,0 +1,14 @@
+Triste Comprador
+E-mail: test_user_1074274690@testuser.com
+Usuário: TESTUSER1074274690
+Senha: oXuLdIpdWV
+
+Cartão: 5031 4332 1540 6351
+Cod Seg: 123
+Dt_ven: 11/25
+CPF: 12345678909
+
+
+Vendedor
+Usuário: TESTUSER84556535
+Senha: q1ksu2z5ZU

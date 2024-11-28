@@ -11262,7 +11262,7 @@ form.user .btn-user {
   color: #5a5c69;
   background: #f8f9fc;
   overflow: hidden;
-  clip: rect(0, 900px, 0, 0);
+  clip: rect(0, 90px, 0, 0);
   animation: noise-anim-2 3s infinite linear alternate-reverse;
 }
 
@@ -11282,6 +11282,43 @@ body.sidebar-toggled footer.sticky-footer {
 .line{
   text-decoration: line-through;
 }
+.ft-size-10{
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+  margin-left: 5px !important;
+  font-size: 10px !important;
+}
+.ft-size-13{
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+  margin-left: 5px !important;
+  font-size: 13px !important;
+}
+.edit-position-box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.05);
+  color: black;
+}
+.edit-end-box{
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  margin-top: 10px;
+}
+.edit-li-border{
+  border: none !important;
+}
+.edit-li-border-esq{
+  border: none !important;
+  justify-content: start !important;
+  width: 100% !important;
+}
+.edit-p-margin{
+  margin: 0 !important;
+}
 .txt-black{
   color: black;
 }
@@ -11295,7 +11332,16 @@ body.sidebar-toggled footer.sticky-footer {
   position: absolute;
   z-index: 1000px;
 }
-
+.bg-danger-white{
+  background-color: #f5b7b1;
+}
+.border-radius{
+  border-radius: 15px 15px 15px 15px;
+  padding: 5px !important;
+}
+.fundo_thead{
+  border-radius: 15px;
+}
 /* .edit-img img{
   width: 250px;
   height: 300px;
