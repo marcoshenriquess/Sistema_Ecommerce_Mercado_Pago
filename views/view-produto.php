@@ -6,12 +6,12 @@ require_once("../controller/produtoController.php");
 
 $AuxListProd = new ProdutoControll();
 $prod = $AuxListProd->ObterProdutoControll($_GET['id']);
-
-
+$ListProd = $AuxListProd->ItemsAleatorios();
 
 
 include_once('head.php');
 ?>
+
 <body class="bg-light">
 
     <!-- Content Wrapper -->
@@ -34,167 +34,141 @@ include_once('head.php');
                                 <?php if ($prod['prod_desconto'] > 0) { ?>
                                     <span class="badge bg-danger m-3 p-2 zindex-fixed txt-white">-<?= $prod['prod_desconto'] ?>% OFF</span>
                                 <?php } ?>
-                                <img class="card-img-top mb-5 mb-md-0" src="../public/img/uploads/<?= $prod['prod_imagem'] ?>" alt="..." />
+                                
+                                <?php
+                                    $image_path = "../public/img/uploads/" .$prod['prod_imagem'];
+                                        if(file_exists($image_path)){
+                                            ?><img src="../public/img/uploads/<?= $prod['prod_imagem'] ?>" class="card-img-top" ><?php
+                                        } else {
+                                            ?><img src="../public/img/default.webp" class="card-img-top" ><?php
+                                        }
+
+                                    ?>
                             </div>
                             <div class="col-md-6">
                                 <h1 class="display-5 fw-bolder"><?= $prod['prod_nome'] ?></h1>
-                                <div class="fs-5 mb-5">
-                                    <?php if ($prod['prod_desconto'] > 0) { ?>
-                                        <sup>
-                                            <p class="txt-gray fs-6 line m-0">R$ <?= $prod['prod_venda'] ?></p>
-                                        </sup>
-                                        <?php
-                                        $ValorDesconto = ($prod['prod_desconto'] / 100) * $prod['prod_venda'];
-                                        $Result = $prod['prod_venda'] - $ValorDesconto;
-                                        $ValorComDesconto = number_format($Result, 2, ',', '.');
-                                        ?>
-                                        <p class="txt-black fs-1">R$ <?= $ValorComDesconto ?></p>
-                                    <?php } else { ?>
+                                <div class="p-2">
+                                    <div>
+                                        <?php $ValorTotal = 0;
+                                        if ($prod['prod_desconto'] > 0) { ?>
+                                            <sup>
+                                                <p class="txt-gray fs-6 line m-0">R$ <?= $prod['prod_venda'] ?></p>
+                                            </sup>
+                                            <?php
+                                            $ValorDesconto = ($prod['prod_desconto'] / 100) * $prod['prod_venda'];
+                                            $Result = $prod['prod_venda'] - $ValorDesconto;
+                                            $ValorComDescoto = number_format($Result, 2, '.', ',');
+                                            $prod['ValorDe'] = $ValorComDescoto;
+                                            ?>
+                                            <p class="txt-black fs-3">R$ <?= $prod['ValorDe'] ?></p>
+                                        <?php } else { ?>
 
-                                        <p class="txt-black fs-1 ">R$ <?= $prod['prod_venda'] ?></p>
-                                    <?php } ?>
+                                            <p class="txt-black fs-3 ">R$ <?= $prod['prod_venda'] ?></p>
+                                        <?php } ?>
+                                    </div>
                                 </div>
                                 <p class="lead"><?= $prod['prod_descricao'] ?></p>
-                                <div class="d-flex">
-                                    <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
-                                    <button class="btn btn-outline-dark flex-shrink-0" type="button">
-                                        <i class="bi-cart-fill me-1"></i>
-                                        Add to cart
-                                    </button>
-                                </div>
+                                <form class="h-auto" method="GET" action="index.php?id=">
+                                    <input type="hidden" name="id" value="<?= $prod['prod_id'] ?>">
+                                    <?php if ($prod['prod_quantidade'] > 0) { ?>
+                                        <a onclick="AddCarrinho(<?= $prod['prod_id'] ?>)"><button type="submit"
+                                                id="AddCarrinho" class="btn btn-warning p-2 w-100 ">Adicionar ao
+                                                Carrinho</button></a>
+                                    <?php } else { ?>
+                                        <div class="btn btn-danger p-2 w-100" role="alert">
+                                            <div class="fs-5 text-center">PRODUTO INDISPONÍVEL</div>
+                                        </div>
+                                    <?php } ?>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </section>
                 <!-- Related items section-->
                 <section class="py-5 bg-light">
-                    <div class="container px-4 px-lg-5 mt-5">
-                        <h2 class="fw-bolder mb-4">Related products</h2>
-                        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                            <div class="col mb-5">
-                                <div class="card h-100">
-                                    <!-- Product image-->
-                                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                                    <!-- Product details-->
-                                    <div class="card-body p-4">
-                                        <div class="text-center">
-                                            <!-- Product name-->
-                                            <h5 class="fw-bolder">Fancy Product</h5>
-                                            <!-- Product price-->
-                                            $40.00 - $80.00
-                                        </div>
+                    <div class="ajuste-heigth-box text-center">
+                        <h2 class="mb-5">Related products</h2>
+                        <div class="row ajuste-flex-cards">
+                            <?php foreach ($ListProd as $item): ?>
+                                <div class="card shadow rounded ajuste-card-item ajuste-flex-boxs">
+                                    <div>
+                                        <?php if ($item['prod_desconto'] > 0) { ?>
+                                            <span class="badge bg-danger m-3 p-2 zindex-fixed txt-white">-<?= $item['prod_desconto'] ?>%
+                                                OFF</span>
+                                        <?php } ?>
+                                
+                                        <?php
+                                            $image_path = "../public/img/uploads/" .$item['prod_imagem'];
+                                                if(file_exists($image_path)){
+                                                    ?><img src="../public/img/uploads/<?= $item['prod_imagem'] ?>" class="card-img-top" ><?php
+                                                } else {
+                                                    ?><img src="../public/img/default.webp" class="card-img-top" ><?php
+                                                }
+
+                                        ?>
                                     </div>
-                                    <!-- Product actions-->
-                                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col mb-5">
-                                <div class="card h-100">
-                                    <!-- Sale badge-->
-                                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                                    <!-- Product image-->
-                                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                                    <!-- Product details-->
-                                    <div class="card-body p-4">
-                                        <div class="text-center">
-                                            <!-- Product name-->
-                                            <h5 class="fw-bolder">Special Item</h5>
-                                            <!-- Product reviews-->
-                                            <div class="d-flex justify-content-center small text-warning mb-2">
-                                                <div class="bi-star-fill"></div>
-                                                <div class="bi-star-fill"></div>
-                                                <div class="bi-star-fill"></div>
-                                                <div class="bi-star-fill"></div>
-                                                <div class="bi-star-fill"></div>
+                                    <div class="card-body p-2 ajuste-flex-boxs">
+                                        <div class="p-2">
+                                            <div>
+                                                <p class="card-title txt-black"><?= $item['prod_nome'] ?></p>
                                             </div>
-                                            <!-- Product price-->
-                                            <span class="text-muted text-decoration-line-through">$20.00</span>
-                                            $18.00
-                                        </div>
-                                    </div>
-                                    <!-- Product actions-->
-                                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col mb-5">
-                                <div class="card h-100">
-                                    <!-- Sale badge-->
-                                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                                    <!-- Product image-->
-                                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                                    <!-- Product details-->
-                                    <div class="card-body p-4">
-                                        <div class="text-center">
-                                            <!-- Product name-->
-                                            <h5 class="fw-bolder">Sale Item</h5>
-                                            <!-- Product price-->
-                                            <span class="text-muted text-decoration-line-through">$50.00</span>
-                                            $25.00
-                                        </div>
-                                    </div>
-                                    <!-- Product actions-->
-                                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col mb-5">
-                                <div class="card h-100">
-                                    <!-- Product image-->
-                                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                                    <!-- Product details-->
-                                    <div class="card-body p-4">
-                                        <div class="text-center">
-                                            <!-- Product name-->
-                                            <h5 class="fw-bolder">Popular Item</h5>
-                                            <!-- Product reviews-->
-                                            <div class="d-flex justify-content-center small text-warning mb-2">
-                                                <div class="bi-star-fill"></div>
-                                                <div class="bi-star-fill"></div>
-                                                <div class="bi-star-fill"></div>
-                                                <div class="bi-star-fill"></div>
-                                                <div class="bi-star-fill"></div>
+                                            <div>
+                                                <?php $ValorTotal = 0;
+                                                if ($item['prod_desconto'] > 0) { ?>
+                                                    <sup>
+                                                        <p class="txt-gray fs-6 line m-0">R$ <?= $item['prod_venda'] ?></p>
+                                                    </sup>
+                                                    <?php
+                                                    $ValorDesconto = ($item['prod_desconto'] / 100) * $item['prod_venda'];
+                                                    $Result = $item['prod_venda'] - $ValorDesconto;
+                                                    $ValorComDescoto = number_format($Result, 2, '.', ',');
+                                                    $item['ValorDe'] = $ValorComDescoto;
+                                                    ?>
+                                                    <p class="txt-black fs-3">R$ <?= $item['ValorDe'] ?></p>
+                                                <?php } else { ?>
+
+                                                    <p class="txt-black fs-3 ">R$ <?= $item['prod_venda'] ?></p>
+                                                <?php } ?>
                                             </div>
-                                            <!-- Product price-->
-                                            $40.00
+                                        </div>
+                                        <div class=" mt-5">
+                                            <div class="d-flex justify-content-md-center align-items-center w-100">
+                                                <a class="btn btn-outline-secondary mb-2 d-flex justify-content-md-center align-items-center w-100"
+                                                    style="height: 40px;" href="view-produto.php?id=<?= $item['prod_id'] ?>">Ver</a>
+                                            </div>
+                                            <form class="h-auto" method="GET" action="index.php?id=">
+                                                <input type="hidden" name="id" value="<?= $item['prod_id'] ?>">
+                                                <?php if ($item['prod_quantidade'] > 0) { ?>
+                                                    <a onclick="AddCarrinho(<?= $item['prod_id'] ?>)"><button type="submit"
+                                                            id="AddCarrinho" class="btn btn-warning p-2 w-100 ">Adicionar ao
+                                                            Carrinho</button></a>
+                                                <?php } else { ?>
+                                                    <div class="btn btn-danger p-2 w-100" role="alert">
+                                                        <div class="fs-5 text-center">PRODUTO INDISPONÍVEL</div>
+                                                    </div>
+                                                <?php } ?>
+                                            </form>
                                         </div>
                                     </div>
-                                    <!-- Product actions-->
-                                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                                    </div>
                                 </div>
-                            </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                 </section>
             </div>
-
-            <!-- /.container-fluid -->
-
-
-
-            <!-- Bootstrap core JavaScript-->
-            <script src="C:/xampp/htdocs/project/public/vendor/jquery/jquery.min.js"></script>
-            <script src="C:/xampp/htdocs/project/public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-            <!-- Core plugin JavaScript-->
-            <script src="C:/xampp/htdocs/project/public/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-            <!-- Custom scripts for all pages-->
-            <script src="C:/xampp/htdocs/project/public/js/sb-admin-2.min.js"></script>
-
-            <!-- Page level plugins -->
-            <script src="C:/xampp/htdocs/project/public/vendor/chart.js/Chart.min.js"></script>
-
-            <!-- Page level custom scripts -->
-            <script src="C:/xampp/htdocs/project/public/js/demo/chart-area-demo.js"></script>
-            <script src="C:/xampp/htdocs/project/public/js/demo/chart-pie-demo.js"></script>
-
+            <!-- Adicionar no localStorage o produto -->
+            <script>
+                function AddCarrinho(id) {
+                    var value = parseInt(localStorage.getItem('quantidade_' + id));
+                    var cont = value;
+                    if (value > 0) {
+                        let total = cont += 1;
+                        localStorage.setItem('quantidade_' + id, total);
+                    } else {
+                        localStorage.setItem('quantidade_' + id, 1);
+                    }
+                }
+            </script>
 </body>
 
 </html>

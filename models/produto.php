@@ -24,11 +24,11 @@ class ProdutoModel
 
     private $conn;
 
-    public function __construct($prod_id = null, $prod_nome = null, $prod_tipo_prod = null, $prod_custo = null, $prod_venda = null, $prod_descricao = null, $prod_quantidade = null, $prod_desconto = null, $prod_imagem = null, $prod_usuario = null, $prod_dt_ini = null, $prod_status = null, $prod_dt_exc = null)
+    public function __construct($prod_id = null, $prod_nome = null, $prod_tipo = null, $prod_custo = null, $prod_venda = null, $prod_descricao = null, $prod_quantidade = null, $prod_desconto = null, $prod_imagem = null, $prod_usuario = null, $prod_dt_ini = null, $prod_status = null, $prod_dt_exc = null)
     {
         $this->prod_id = $prod_id;
         $this->prod_nome = $prod_nome;
-        $this->prod_tipo = $prod_tipo_prod;
+        $this->prod_tipo = $prod_tipo;
         $this->prod_custo = $prod_custo;
         $this->prod_venda = $prod_venda;
         $this->prod_descricao = $prod_descricao;
@@ -162,12 +162,50 @@ class ProdutoModel
         $this->QuantidadeVenda = $QuantidadeVenda;
     }
 
-    public function ListaProduto()
+    public function ListaAllProduto()
     {
         try {
             $db = new Database();
             $this->conn = $db->getConnection();
 
+            $sql = " SELECT prod_id,
+                        produtos.prod_nome, 
+                        Tipos_Produtos.tipo_prod_nome,
+                        produtos.prod_descricao, 
+                        produtos.prod_custo, 
+                        produtos.prod_venda, 
+                        produtos.prod_quantidade,
+                        produtos.prod_desconto,
+                        produtos.prod_imagem, 
+                        produtos.prod_dt_ini, 
+                        usuario.usu_nome AS vendedor_nome
+                    FROM 
+                        produtos
+                    INNER JOIN 
+                        Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod  
+                    INNER JOIN 
+                        usuario ON produtos.prod_usu_cad = usuario.usu_id
+                        WHERE prod_status = 1;;
+                    ";
+
+            $stmt = $this->conn->query($sql);
+            $stmt->execute();
+            $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            
+
+            $stmt->closeCursor();
+
+            return $produtos;
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+    public function ExportCSVProdutos()
+    {
+        try {
+            $db = new Database();
+            $this->conn = $db->getConnection();
 
             $sql = " SELECT prod_id,
                         produtos.prod_nome, 
@@ -188,8 +226,53 @@ class ProdutoModel
                         usuario ON produtos.prod_usu_cad = usuario.usu_id
                         WHERE prod_status = 1;
                     ";
+
             $stmt = $this->conn->query($sql);
+            $stmt->execute();
+
+            $stmt->closeCursor();
+
+            return $stmt;
+
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
+    public function ListaProduto($pag)
+    {
+        try {
+            $db = new Database();
+            $this->conn = $db->getConnection();
+
+            $limite = 8;
+            $inicio = $pag * $limite;
+
+            $sql = " SELECT prod_id,
+                        produtos.prod_nome, 
+                        Tipos_Produtos.tipo_prod_nome,
+                        produtos.prod_descricao, 
+                        produtos.prod_custo, 
+                        produtos.prod_venda, 
+                        produtos.prod_quantidade,
+                        produtos.prod_desconto,
+                        produtos.prod_imagem, 
+                        produtos.prod_dt_ini, 
+                        usuario.usu_nome AS vendedor_nome
+                    FROM 
+                        produtos
+                    INNER JOIN 
+                        Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod  
+                    INNER JOIN 
+                        usuario ON produtos.prod_usu_cad = usuario.usu_id
+                        WHERE prod_status = 1 ORDER BY prod_id OFFSET :pagina ROWS FETCH NEXT 8 ROWS ONLY;
+                    ";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(":pagina", $inicio, PDO::PARAM_INT);
+            $stmt->execute();
+
             $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             $stmt->closeCursor();
 
             return $produtos;
@@ -197,7 +280,6 @@ class ProdutoModel
             return $e->getMessage();
         }
     }
-
 
     public function ListaProdutoPorId($id)
     {
@@ -223,7 +305,7 @@ class ProdutoModel
                         Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod  
                     INNER JOIN 
                         usuario ON produtos.prod_usu_cad = usuario.usu_id
-                        WHERE prod_usu_cad = :id AND prod_status = 1;
+                        WHERE prod_usu_cad = :id AND prod_status = 1 ORDER BY prod_id OFFSET 15 ROWS FETCH NEXT 5 ROWS ONLY;
                     ";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([$id]);
@@ -262,6 +344,26 @@ class ProdutoModel
         }
     }
 
+    public function ItemsAleatorios()
+    {
+        try {
+            $db = new Database();
+            $this->conn = $db->getConnection();
+
+            $sql = 'SELECT TOP 3 *
+                    FROM produtos WHERE prod_status = 1
+                    ORDER BY NEWID();';
+            $stmt = $this->conn->query($sql);
+            $stmt->execute();
+            $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $stmt->closeCursor();
+
+            return $produtos;
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
     public function CadastrarProdutos(ProdutoModel $dados)
     {
         try {
@@ -270,9 +372,14 @@ class ProdutoModel
             $db = new Database();
             $this->conn = $db->getConnection();
 
-            $sql =
-                "INSERT INTO produtos (prod_nome, prod_tipo, prod_custo, prod_venda, prod_descricao, prod_quantidade, prod_desconto, prod_imagem, prod_usu_cad, prod_dt_ini, prod_status, prod_dt_exc)
-                            VALUES (:nome,:prod_tipo, :preco_custo, :preco_venda,:descricao, :quantidade, :desconto, :imagem,:prod_usuario, GETDATE(), 1, null);";
+            $sql = "INSERT INTO produtos (prod_nome, prod_tipo, prod_custo, prod_venda, prod_descricao, prod_quantidade, prod_desconto, prod_imagem, prod_usu_cad, prod_dt_ini, prod_status, prod_dt_exc)
+                            VALUES (:nome,
+                            
+                            (SELECT TOP 1 id_tipo_prod
+                            FROM Tipos_Produtos
+                            WHERE tipo_prod_nome = :prod_tipo),
+                            
+                            :preco_custo, :preco_venda,:descricao, :quantidade, :desconto, :imagem,:prod_usuario, GETDATE(), 1, null);";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(":nome", $dados->getNome(), PDO::PARAM_STR);
             $stmt->bindValue(":prod_tipo", $dados->getTipoProd(), PDO::PARAM_STR);
@@ -283,10 +390,15 @@ class ProdutoModel
             $stmt->bindValue(":quantidade", $dados->getQuantidade(), PDO::PARAM_STR);
             $stmt->bindValue(":imagem", $dados->getImagem(), PDO::PARAM_STR);
             $stmt->bindValue(":prod_usuario", $dados->getProdUsuario(), PDO::PARAM_STR);
-            // var_dump($stmt->execute()); exit();
             $stmt->execute();
+
             $stmt->closeCursor();
+
         } catch (Exception $e) {
+            echo "<pre>";
+            var_dump($e);
+            echo "</pre>";
+            exit();
             return $e->getMessage();
         }
     }
@@ -307,7 +419,7 @@ class ProdutoModel
             $stmt->bindValue(":descricao", $dados->getDescricao(), PDO::PARAM_STR);
             $stmt->bindValue(":desconto", $dados->getDesconto(), PDO::PARAM_STR);
             $stmt->bindValue(":quantidade", $dados->getQuantidade(), PDO::PARAM_STR);
-            if($dados->getImagem() != null){
+            if ($dados->getImagem() != null) {
                 $stmt->bindValue(":imagem", $dados->getImagem(), PDO::PARAM_STR);
             } else {
                 $produto = $this->ObterProduto($idProd);
@@ -362,7 +474,8 @@ class ProdutoModel
         }
     }
 
-    public function AtualizarQuantidade($id, $qntde){
+    public function AtualizarQuantidade($id, $qntde)
+    {
         try {
             // var_dump('AQUIII: ',$qntde);
             $db = new Database();

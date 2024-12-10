@@ -66,6 +66,4 @@ $List = $UsuarioCont->ListaUsuarioControll();
             </table>
         </div>
 
-        <!-- END CONTEUDO -->
-
-        <?php include_once('./footer.php');      ?>
+        <?php include_once('./footer.php');?>

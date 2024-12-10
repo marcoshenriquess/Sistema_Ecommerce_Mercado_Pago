@@ -21,7 +21,7 @@ if (isset($_POST['logar'])) {
 
     $AuxControll = new LoginControll();
     $err = $AuxControll->login($email, $senha);
-    $msg =  "<img class='mb-4' src='../public/img/loading.gif' alt='' width='72' height='57'>";
+    $msg =  'A';;
 }
 
 
@@ -46,9 +46,13 @@ include_once('head.php');
                                     <div class="text-center">
                                         <?php
                                         if ($msg == null) {
-                                            echo "<img class='mb-4' src='../public/img/icon-login.gif' alt='' width='72' height='57'>";
+                                            echo '';
                                         } else {
-                                            echo $msg;
+                                            echo '<div class="text-center">
+                                                    <div class="spinner-border" role="status">
+                                                        <span class="visually-hidden"></span>
+                                                    </div>
+                                                    </div>';
                                         }
                                         ?>
                                         <h1 class="h4 text-gray-900 mb-4">Login</h1>
@@ -72,7 +76,7 @@ include_once('head.php');
                                     </form>
                                     <hr>
                                     <div class="text-center">
-                                        <a class="small" href="register.html">Create an Account!</a>
+                                        <a class="small" href="registrar-se.php">Create an Account!</a>
                                     </div>
                                 </div>
                             </div>
@@ -111,16 +115,6 @@ include_once('head.php');
 
 
     </div>
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="../public/vendor/jquery/jquery.min.js"></script>
-    <script src="../public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="../public/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="../public/js/sb-admin-2.min.js"></script>
 
 </body>
 

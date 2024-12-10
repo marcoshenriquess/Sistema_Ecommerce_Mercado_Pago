@@ -29,13 +29,11 @@ if (isset($_SESSION['usuario_logado'])) {
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="index.php">Home</a></li>
                 </li>
             </ul>
-
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown no-arrow m-2 d-flex align-items-center">
                     <a class="d-flex dropdown no-arrow align-items-center text-decoration-line-through" href="carrinho.php">
                         <button class="btn btn-light h-50" type="submit">
-                            <i class="bi-cart-fill me-1"></i>
-                            Cart
+                            <i class="fas fa-shopping-cart fa-sm fa-fw text-dark-400"></i>
                         </button>
                     </a>
                 </li>
@@ -54,6 +52,16 @@ if (isset($_SESSION['usuario_logado'])) {
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                             aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="meus_dados.php">
+                                <i class="fas fa-address-card fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Meus Dados
+                            </a>
+                            <hr/>
+                            <a class="dropdown-item" href="pedidos.php">
+                                <i class="fas fa-shopping-bag fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Meus Pedidos
+                            </a>
+                            <hr/>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Sair

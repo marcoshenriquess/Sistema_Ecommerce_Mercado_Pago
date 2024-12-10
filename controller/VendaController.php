@@ -12,4 +12,22 @@ class VendaController{
         
         return $result;
     }
+    public function ObterAllVenda(){
+        $AuxControll = new VendaModel();
+        $result = $AuxControll->ObterAllVenda();
+        
+        return $result;
+    }
+    public function ObterPagVenda($pag){
+        $AuxControll = new VendaModel();
+        $result = $AuxControll->ObterPagVenda($pag);
+        
+        return $result;
+    }
+    public function ObterVendaPorIdUsu($id){
+        $AuxControll = new VendaModel();
+        $result = $AuxControll->ObeterVendaIdUsu($id);
+        
+        return $result;
+    }
 }

@@ -11336,7 +11336,7 @@ body.sidebar-toggled footer.sticky-footer {
   background-color: #f5b7b1;
 }
 .border-radius{
-  border-radius: 15px 15px 15px 15px;
+  border-radius: 15px 15px 15px 15px !important;
   padding: 5px !important;
 }
 .fundo_thead{
@@ -11346,11 +11346,111 @@ body.sidebar-toggled footer.sticky-footer {
   width: 250px;
   height: 300px;
 } */
+.Mostrar{
+  display: block !important;
+}
+/* .HabilitarAlteracao{
+  display: block;
+}
+.opcoes-alterar-dados{
+  display: none;
+} */
+.esconder{
+  display: none !important;
+}
 
+.borda-table{
+  border-radius: 15px 15px 15px 15px !important;
+}
 
+.sem-edits-nav-link{
+  border: none !important;
+  background-color: transparent !important;
+}
 
+.border-b-r{
+  border-radius: 0px 15px 15px 15px !important;
+}
 
+.sem-borda-bottom{
+  border-bottom: 0px !important;
+}
 
+.bg-orange{
+  background-color: #fd7e14 !important;
+}
+.bg-orange-dark{
+  background-color: #c76e00 !important;
+}
 
+.sobrepor-container{
+  z-index: 2; /* put .green-box above .dashed-box */
+}
+.bg-segundo-item-{
+  background-color: #b7b9cc;
+}
+.h-ajuste{
+  height: 30em !important;
+}
+.margin-ajuste-graf{
+  margin-left: 2px;
+}
+.w-ajust-manul-card{
+  width: 20em !important;
+}
+.w-ajust-manul-pie{
+  width: 50em !important;
+}
+.ajuste-h-categoria{
+  height: auto !important;
+  min-height: 560px !important;
+  padding-bottom: 5px !important;
+}
+.ajuste-w-graf{
+  width: 100% !important;
+}
+.ajuste-h-graf{
+  height: 100% !important;
+}
+.border-top-none thead{
+  border-top: 0px !important;
+}
+.ajuste-card-item{
+  width: 20rem; 
+  height: auto; 
+  min-height: 440px;
+}
 
+.ajuste-btn-item-card{
+  border: 2px solid yellow;
+  width: 100%;
+  margin: 0px !important;
+  padding: 0px !important;
+}
+.ajuste-flex-boxs{
+  display: flex !important;
+  justify-content: space-between !important;
+  flex-direction: column !important;
+}
+
+.ajuste-heigth-box{
+  width: 100vw !important;
+}
+.ajuste-flex-cards{
+  flex-wrap: nowrap !important;
+  display: flex !important;
+  justify-content: space-evenly !important;
+  align-items: center;
+}
+.ajuste-flex-import{
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+.w-ajuste-btn-import{
+  width: 200px !important;
+}
+.radius-ajuste{
+  border-radius: 20px;
+}
 /* MEUS EDIT'S */

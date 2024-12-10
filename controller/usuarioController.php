@@ -32,7 +32,13 @@ class UsuarioController{
         $usuario = new UsuarioModel();
         $usuario->AlterarUsuario($dadosUsuario, $id);
 
-        header('Location: usuarios.php');
+        // header('Location: usuarios.php');
+    }
+    public function AlterarUsuarioControllPessoal($dadosUsuario, $id){
+        $usuario = new UsuarioModel();
+        $usuario->AlterarUsuarioPessoal($dadosUsuario, $id);
+
+        // header('Location: usuarios.php');
     }
     
 }

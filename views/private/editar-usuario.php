@@ -40,12 +40,16 @@ if (isset($_POST['alterar'])) {
             $_POST['cpf'],
             $_POST['telefone'],
             $_POST['email'],
+            null,
             $_POST['tipo_usuario'],
             $_POST['endereco'],
             $_POST['numero'],
             $_POST['estado'],
             $_POST['cidade'],
-            $_POST['complemento']
+            $_POST['endereco'],
+            null,
+            null,
+            null
         );
 
         $AuxControllUsu = new UsuarioController();

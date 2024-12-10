@@ -22,17 +22,34 @@ $VendaTotal = 0;
                 // Atualiza o valor do input com o valor salvo
                 input.value = quantidadeSalva;
             }
-            const inputs2 = parseFloat(document.querySelector(`input[id^='${id}_valor_']`).value) || 0;
-            const Total = ValorParaSoma += (inputs2 * quantidadeSalva);
+
+
+            const inputs2 = document.querySelector(`input[id^='${id}_valor_']`).value || 0;
+            const valorProd = parseFloat(inputs2.replace(/\./g, '').replace(',', '.')) || 0;
+
+
+            // Realiza a soma corretamente.
+            const Total = ValorParaSoma += (valorProd * quantidadeSalva);
+
+            // Formata o resultado com duas casas decimais e separador brasileiro.
+            const ValorFormatado = Total.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
 
             const TESTE = document.querySelector("#total");
-            TESTE.innerHTML = Total.toFixed(2).replace('.', ',');
+            TESTE.innerHTML = ValorFormatado;
 
 
         });
     };
 
-
+    function removeCaracteresMoney(caracteres) {
+        const RemoveOtherCarac = caracteres.replace(/[^0-9,.-]+/g, '');
+        const valorLimpo = RemoveOtherCarac.replace(/\./g, '');
+        const FormatFinal = valorLimpo.replace(',', '.');
+        return parseFloat(FormatFinal);
+    }
 
     function ExcluirItem(id) {
 
@@ -63,13 +80,22 @@ $VendaTotal = 0;
             quantidade.value = valorAtual - 1;
             localStorage.setItem('quantidade_' + id, quantidade.value);
 
-            const ValorProduto = document.querySelector(`input[id^='${id}_valor_']`).value;
+            const GetValor = document.querySelector(`input[id^='${id}_valor_']`).value;
+            const ValorProduto = parseFloat(removeCaracteresMoney(GetValor));
 
-            let ValorAtual = document.getElementById('total').textContent.replace(',', '.');
+            const GetCarrinhototal = document.getElementById('total').textContent;
+            const ValorCarrinho = parseFloat(removeCaracteresMoney(GetCarrinhototal));
 
-            let ValorTotal = parseFloat(ValorAtual) - parseFloat(ValorProduto);
+            const ValorTotalCarrinho = ValorCarrinho - ValorProduto;
 
-            document.getElementById('total').textContent = `${ValorTotal.toFixed(2).replace('.', ',')}`;
+            const ValorFormatado = ValorTotalCarrinho.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+
+
+            document.getElementById('total').textContent = ValorFormatado;
+
         }
 
     }
@@ -95,34 +121,23 @@ $VendaTotal = 0;
                     quantidade.value = QuantidadeAtual + 1;
                     localStorage.setItem('quantidade_' + id, quantidade.value);
 
-                    const ValorProduto = document.querySelector(`input[id^='${id}_valor_']`).value;
 
-                    let ValorAtual = document.getElementById('total').textContent.replace(',', '.');
+                    const GetValor = document.querySelector(`input[id^='${id}_valor_']`).value;
+                    const ValorProduto = parseFloat(removeCaracteresMoney(GetValor));
 
-                    let ValorTotal = parseFloat(ValorAtual) + parseFloat(ValorProduto);
+                    const GetCarrinhototal = document.getElementById('total').textContent;
+                    const ValorCarrinho = parseFloat(removeCaracteresMoney(GetCarrinhototal));
 
-                    document.getElementById('total').textContent = `${ValorTotal.toFixed(2).replace('.', ',')}`;
+                    const ValorTotalCarrinho = ValorCarrinho + ValorProduto;
 
-                    // const inputs = document.querySelectorAll("input[id^='quantidade_']");
-                    // let ValorParaSoma = 0;
-                    // inputs.forEach(input => {
-                    //     const id = input.id.split('_')[1]; // Extrai o ID do produto do input
-                    //     const quantidadeSalva = localStorage.getItem('quantidade_' + id);
+                    const ValorFormatado = ValorTotalCarrinho.toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    });
 
-                    //     if (quantidadeSalva !== null) {
-                    //         // Atualiza o valor do input com o valor salvo
-                    //         input.value = quantidadeSalva;
-                    //     }
-                    //     const inputs2 = document.querySelector(`input[id^='${id}_valor_']`);
+                    const TESTE = document.querySelector("#total");
+                    document.getElementById('total').textContent = ValorFormatado;
 
-                    //     const valor = parseFloat(inputs2.value) || 0;
-                    //     const Total = ValorParaSoma += (valor * quantidadeSalva);
-
-                    //     document.getElementById('total').textContent = `${parseInt(localStorage.getItem('quantidade_' + id))}`
-                    //     // TESTE.innerHTML = Total.toFixed(2).replace('.', ',');
-                    // });
-
-                    // window.location.reload(true);
                 }
             },
             error: function(err) {
@@ -132,42 +147,52 @@ $VendaTotal = 0;
 
     }
 
+    function FinalizarCompra($idUsu) {
+        $User = $idUsu;
+            if ($User) {
+                const inputs = document.querySelectorAll("input[id^='quantidade_']");
+                let itens = []; // Array para armazenar os dados dos produtos
 
-    function FinalizarCompra() {
-        const inputs = document.querySelectorAll("input[id^='quantidade_']");
-        let itens = []; // Array para armazenar os dados dos produtos
+                inputs.forEach(input => {
+                    const id = input.id.split('_')[1];
+                    const quantidade = document.getElementById('quantidade_' + id).value;
+                    const valor = document.querySelector(`input[id^='${id}_valor_']`).value;
+                    const valorLimpo = valor.replace(/\./g, '');
+                    const FormatFinal = valorLimpo.replace(',', '.');
 
-        inputs.forEach(input => {
-            const id = input.id.split('_')[1];
-            const quantidade = document.getElementById('quantidade_' + id).value;
-            const valor = document.querySelector(`input[id^='${id}_valor_']`).value;
+                    // Adiciona o produto ao array de itens
+                    itens.push({
+                        prod_id: id,
+                        qntd: quantidade,
+                        valor: FormatFinal
+                    });
+                });
 
-            // Adiciona o produto ao array de itens
-            itens.push({
-                prod_id: id,
-                qntd: quantidade,
-                valor: valor
-            });
-        });
-
-        // Envia o array de itens para a controller em uma única requisição
-        $.ajax({
-            url: '../controller/CarrinhoController.php',
-            type: 'POST',
-            data: {
-                action: 'FinalizarCompra',
-                itens: JSON.stringify(itens) // Serializa o array para enviar como string
-            },
-            success: function(res) {
-                const data = JSON.parse(res); // Converte a string JSON em um objeto
-                const url = data.url; // Acessa a propriedade 'url'
-                window.open(url, '_blank');
-                localStorage.clear();
-            },
-            error: function(err) {
-                console.error("Erro na requisição:", err);
+                // Envia o array de itens para a controller em uma única requisição
+                $.ajax({
+                    url: '../controller/CarrinhoController.php',
+                    type: 'POST',
+                    data: {
+                        action: 'FinalizarCompra',
+                        itens: JSON.stringify(itens) // Serializa o array para enviar como string
+                    },
+                    success: function(res) {
+                        if (res) {
+                            const data = JSON.parse(res); // Converte a string JSON em um objeto
+                            const url = data.url; // Acessa a propriedade 'url'
+                            window.open(url, '_blank');
+                            localStorage.clear();
+                        } else {
+                            document.getElementById('ErrCompra').textContent = "Não foi possível realizar a compra! Tente novamente mais tarde!!";
+                        }
+                    },
+                    error: function(err) {
+                        console.error("Erro na requisição:", err);
+                    }
+                });
+            } else {
+                window.location.href = "Login.php";
             }
-        });
     }
 </script>
 
@@ -192,7 +217,15 @@ $VendaTotal = 0;
                                 <?php if ($item['prod_desconto'] > 0) { ?>
                                     <span class="badge bg-danger m-1 p-1 zindex-fixed txt-white">-<?= $item['prod_desconto'] ?>% OFF</span>
                                 <?php } ?>
-                                <span class=""><img src="../public/img/uploads/<?= $item['prod_imagem'] ?>" style="width: 100px;" class="img-profile rounded"></span>
+                                <?php
+                                $image_path = "../public/img/uploads/" .$item['prod_imagem'];
+                                     if(file_exists($image_path)){
+                                        ?><img src="../public/img/uploads/<?= $item['prod_imagem'] ?>" style="width: 100px;" class="img-profile rounded"><?php
+                                     } else {
+                                         ?><img src="../public/img/default.webp" style="width: 100px;" class="img-profile rounded"><?php
+                                     }
+
+                                ?>
                                 <span class="p-2 w-75 flex-grow-1 bd-highlight">
                                     <p class="m-2"><?= $item['prod_nome'] ?></p>
 
@@ -203,7 +236,7 @@ $VendaTotal = 0;
                                         <?php
                                         $ValorDesconto = ($item['prod_desconto'] / 100) * $item['prod_venda'];
                                         $Result = $item['prod_venda'] - $ValorDesconto;
-                                        $ValorComDescoto = number_format($Result, 2, '.', ',');
+                                        $ValorComDescoto = number_format($Result, 2, ',', '.');
                                         if ($ValorComDescoto > 0) {
                                             $VendaTotal += $Result;
                                         } else {
@@ -213,14 +246,12 @@ $VendaTotal = 0;
                                         ?>
                                         <p class="txt-black ft-size-13">R$ <?= $item['ValorDe'] ?></p>
                                         <input type="hidden" id="<?= $item['prod_id'] ?>_valor_<?= $item['ValorDe'] ?>" value="<?= $item['ValorDe'] ?>">
-                                    <?php } else {
-                                        if ($item['prod_venda'] > 0) {
-                                            $VendaTotal += $item['prod_venda'];
-                                        } else {
-                                            $VendaTotal = $item['prod_venda'];
-                                        } ?>
-                                        <p class="txt-black ft-size-13 ">R$ <?= $item['prod_venda'] ?></p>
-                                        <input type="hidden" id="<?= $item['prod_id'] ?>_valor_<?= $item['prod_venda'] ?>" value="<?= $item['prod_venda'] ?>">
+                                    <?php } else { ?>
+                                        <?php
+                                        $ValorOriginal = number_format($item['prod_venda'], 2, ',', '.');
+                                        ?>
+                                        <p class="txt-black ft-size-13 ">R$ <?= $ValorOriginal ?></p>
+                                        <input type="hidden" id="<?= $item['prod_id'] ?>_valor_<?= $ValorOriginal ?>" value="<?= $ValorOriginal ?>">
                                     <?php } ?>
                                 </span>
                                 <div class="topbar-divider d-none d-sm-block"></div>
@@ -240,34 +271,23 @@ $VendaTotal = 0;
                         <ul class="d-grid gap-2 d-md-flex justify-content-md-end edit-end-box bg-secondary bg-gradient m-0">
                             <li class="list-group-item bd-highlight edit-li-border-esq bg-secondary d-flex align-items-center">
                                 <p class="txt-white fs-1 edit-p-margin">
-                                    Total: R$ &nbsp
-                                <p id="total" class="txt-white fs-1 edit-p-margin"> </p>
+                                    Total: &nbsp
+                                <p id="total" class="txt-white fs-1 edit-p-margin"></p>
                                 </p>
                             </li>
-                            <li class="list-group-item bd-highlight edit-li-border bg-secondary bg-gradient"><button class="btn btn-success" onclick="FinalizarCompra()">Comprar</button></li>
+                            <li class="list-group-item bd-highlight edit-li-border bg-secondary bg-gradient"><button class="btn btn-success" onclick="FinalizarCompra(<?php if (isset($_SESSION['usuario_logado'])) {
+                                                                                                                                                                            echo $_SESSION['usuario_logado']['usu_id'];
+                                                                                                                                                                        } else {
+                                                                                                                                                                            $err = true;
+                                                                                                                                                                        } ?>)">Comprar</button></li>
                             <li class="list-group-item bd-highlight edit-li-border bg-secondary bg-gradient"><a href="index.php" class="btn btn-warning">Voltar</a></li>
                         </ul>
                     <?php } ?>
-
                     </div>
+                    <span id="ErrCompra" class="text-danger"></span>
                 </div>
         </div>
-        <!-- Bootstrap core JavaScript-->
-        <script src="C:/xampp/htdocs/project/public/vendor/jquery/jquery.min.js"></script>
-        <script src="C:/xampp/htdocs/project/public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-        <!-- Core plugin JavaScript-->
-        <script src="C:/xampp/htdocs/project/public/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-        <!-- Custom scripts for all pages-->
-        <script src="C:/xampp/htdocs/project/public/js/sb-admin-2.min.js"></script>
-
-        <!-- Page level plugins -->
-        <script src="C:/xampp/htdocs/project/public/vendor/chart.js/Chart.min.js"></script>
-
-        <!-- Page level custom scripts -->
-        <script src="C:/xampp/htdocs/project/public/js/demo/chart-area-demo.js"></script>
-        <script src="C:/xampp/htdocs/project/public/js/demo/chart-pie-demo.js"></script>
+        
 
 
 </body>

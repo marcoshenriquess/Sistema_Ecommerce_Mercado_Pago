@@ -47,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($_POST["action"] === 'FinalizarCompra') {
         $itens = json_decode($_POST['itens'], true);
         $User = $_SESSION['usuario_logado'];
-
         $AuxPaga->CompraDeProduto($User, $itens);
     }
 }

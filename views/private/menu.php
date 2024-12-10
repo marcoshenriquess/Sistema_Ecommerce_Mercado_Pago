@@ -46,7 +46,7 @@ include_once("../../models/permissao.php");
 
 <!-- Nav Item - Dashboard -->
 <li class="nav-item active">
-    <a class="nav-link" href="index.html">
+    <a class="nav-link" href="index.php">
     <i class="fas fa-chart-line"></i>
         <span>Dashboard</span></a>
 </li>
@@ -60,6 +60,12 @@ include_once("../../models/permissao.php");
     <a class="nav-link" href="produtos.php">
     <i class="fas fa-boxes"></i>
         <span>Produtos</span></a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href="venda.php">
+    <i class="fas fa-money-bill-wave"></i>
+        <span>Vendas</span></a>
 </li>
 
 <?php

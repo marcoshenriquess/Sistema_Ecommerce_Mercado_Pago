@@ -194,12 +194,12 @@ class UsuarioModel
             $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
             
-            $correctPassword = password_verify($senha, $usuario['usu_senha'] ?? '');
-            if ($correctPassword) {
+            // $correctPassword = password_verify($senha, $usuario['usu_senha'] ?? '');
+            // if ($correctPassword) {
                 return $usuario;
-            } else {
-                return false;
-            }
+            // } else {
+            //     return false;
+            // }
         } catch (PDOException $e) {
             echo $e->getMessage();
         }
@@ -328,12 +328,107 @@ class UsuarioModel
             usu_estado = :estado, usu_cidade = :cidade, usu_complemento = :complemento
             WHERE usu_id = $id; ";
             $stmt = $this->conn->prepare($sql);
+            if ($dados->getusu_Nome() != null) {
+                $stmt->bindValue(':nome', $dados->getusu_Nome(), PDO::PARAM_STR);
+            } else {
+                $Usuario = $this->ObterUsuario($id);
+                $stmt->bindValue(':nome', $Usuario['usu_nome'], PDO::PARAM_STR);
+            }
+
+            
+            if ($dados->getusu_Cpf() != null) {
+                $stmt->bindValue(':cpf', $dados->getusu_Cpf(), PDO::PARAM_STR);
+            } else {
+                $Usuario = $this->ObterUsuario($id);
+                $stmt->bindValue(':cpf', $Usuario['usu_cpf'], PDO::PARAM_STR);
+            }
+
+            
+            if ($dados->getusu_Telefone() != null) {
+                $stmt->bindValue(':telefone', $dados->getusu_Telefone(), PDO::PARAM_STR);
+            } else {
+                $Usuario = $this->ObterUsuario($id);
+                $stmt->bindValue(':telefone', $Usuario['usu_telefone'], PDO::PARAM_STR);
+            }
+
+            
+            if ($dados->getusu_Email() != null) {
+                $stmt->bindValue(':email', $dados->getusu_Email(), PDO::PARAM_STR);
+            } else {
+                $Usuario = $this->ObterUsuario($id);
+                $stmt->bindValue(':email', $Usuario['usu_email'], PDO::PARAM_STR);
+            }
+
+            $stmt->bindValue(':senha', $hash);
+
+            if ($dados->getusu_TipoUser() != null) {
+                $stmt->bindValue(':tipo_user', $dados->getusu_TipoUser(), PDO::PARAM_STR);
+            } else {
+                $Usuario = $this->ObterUsuario($id);
+                $stmt->bindValue(':tipo_user', $Usuario['usu_tipo'], PDO::PARAM_STR);
+            }
+
+            if ($dados->getusu_Endereco() != null) {
+                $stmt->bindValue(':endereco', $dados->getusu_Endereco(), PDO::PARAM_STR);
+            } else {
+                $Usuario = $this->ObterUsuario($id);
+                $stmt->bindValue(':endereco', $Usuario['usu_endereco'], PDO::PARAM_STR);
+            }
+
+            if ($dados->getusu_Numero() != null) {
+                $stmt->bindValue(':numero', $dados->getusu_Numero(), PDO::PARAM_STR);
+            } else {
+                $Usuario = $this->ObterUsuario($id);
+                $stmt->bindValue(':numero', $Usuario['usu_numero'], PDO::PARAM_STR);
+            }
+
+            if ($dados->getusu_Estado() != null) {
+                $stmt->bindValue(':estado', $dados->getusu_Estado(), PDO::PARAM_STR);
+            } else {
+                $Usuario = $this->ObterUsuario($id);
+                $stmt->bindValue(':estado', $Usuario['usu_estado'], PDO::PARAM_STR);
+            }
+
+            if ($dados->getusu_Cidade() != null) {
+                $stmt->bindValue(':cidade', $dados->getusu_Cidade(), PDO::PARAM_STR);
+            } else {
+                $Usuario = $this->ObterUsuario($id);
+                $stmt->bindValue(':cidade', $Usuario['usu_cidade'], PDO::PARAM_STR);
+            }
+
+            if ($dados->getusu_Complemento() != null) {
+                $stmt->bindValue(':complemento', $dados->getusu_Complemento(), PDO::PARAM_STR);
+            } else {
+                $Usuario = $this->ObterUsuario($id);
+                $stmt->bindValue(':complemento', $Usuario['usu_complemento'], PDO::PARAM_STR);
+            }
+            $stmt->execute();
+
+            $stmt->closeCursor();
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
+    public function AlterarUsuarioPessoal($dados, $id)
+    {
+        try {
+
+            $db = new Database();
+            $this->conn = $db->getConnection();
+
+            /* CRIPTOGRAFIA DA SENHA DO USUÁRIO */
+
+            // var_dump($hash);exit();
+            $sql = "UPDATE usuario SET 
+            usu_nome = :nome, usu_cpf = :cpf, usu_telefone = :telefone, usu_email = :email,
+            usu_endereco = :endereco, usu_numero = :numero,
+            usu_estado = :estado, usu_cidade = :cidade, usu_complemento = :complemento
+            WHERE usu_id = $id; ";
+            $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(':nome', $dados->getusu_Nome(), PDO::PARAM_STR);
             $stmt->bindValue(':cpf', $dados->getusu_Cpf(), PDO::PARAM_STR);
             $stmt->bindValue(':telefone', $dados->getusu_Telefone(), PDO::PARAM_STR);
             $stmt->bindValue(':email', $dados->getusu_Email(), PDO::PARAM_STR);
-            $stmt->bindValue(':senha', $hash);
-            $stmt->bindValue(':tipo_user', $dados->getusu_TipoUser(), PDO::PARAM_STR);
             $stmt->bindValue(':endereco', $dados->getusu_Endereco(), PDO::PARAM_STR);
             $stmt->bindValue(':numero', $dados->getusu_Numero(), PDO::PARAM_STR);
             $stmt->bindValue(':estado', $dados->getusu_Estado(), PDO::PARAM_STR);
@@ -342,6 +437,8 @@ class UsuarioModel
             $stmt->execute();
 
             $stmt->closeCursor();
+
+            $_SESSION['usuario_logado'] = $this->ObterUsuario($id);
         } catch (PDOException $e) {
             echo $e->getMessage();
         }

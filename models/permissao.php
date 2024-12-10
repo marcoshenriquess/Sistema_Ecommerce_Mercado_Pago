@@ -20,8 +20,8 @@ if (($_SESSION['tipo_user'] == 3) && !$isindRota){
 } 
 
 
-function Verificar_Permissão_Pag(){
-   if($_SESSION['tipo_user'] == 2){
+function Verificar_Permissão_Pag(){ // PARA PAG ADM
+   if($_SESSION['tipo_user'] == 3){
       header('Location: ./index.php');
    }
 }

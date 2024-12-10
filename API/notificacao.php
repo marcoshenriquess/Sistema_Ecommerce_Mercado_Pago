@@ -30,7 +30,7 @@ $cod_venda_banco = $AuxControllVenda->ObterVenda($codigo_venda[1]);
 //VERIFICA SE TEM ALGUMA VENDA COM O MESMO CÓDIGO DE VENDA
 if ($codigo_venda[1] != $cod_venda_banco['cod_venda']) { 
     foreach ($orderDetails["items"] as $key => $item) {
-        var_dump('TESTE: ', $key);
+        // var_dump('TESTE: ', $key);
         $id = $item['id'];
         $qntdRequisitada = $item['quantity'];
         $vendaValor = $item['unit_price'];
@@ -44,6 +44,7 @@ if ($codigo_venda[1] != $cod_venda_banco['cod_venda']) {
             $QntdPosPag = $EmEstoque - $qntdRequisitada;
 
             $AuxControllProd->AtualizarQuantidade($id,  $QntdPosPag);
+            
             $AuxControllVenda->CadastrarVenda($id, $usu_id, $qntdRequisitada, $vendaValor, $codigo_venda[1]);
         }
     }

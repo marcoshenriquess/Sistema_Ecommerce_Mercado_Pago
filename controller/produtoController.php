@@ -7,9 +7,19 @@ class ProdutoControll{
     public function __construct(){
     }
 
-    public function ListaProdutoControll()      {
+    public function ListaProdutoControll($pag)      {
         $AuxProduto = new ProdutoModel();
-        $Produtos = $AuxProduto->ListaProduto();
+        $Produtos = $AuxProduto->ListaProduto($pag);
+        return $Produtos;
+    }
+    public function ListaAllProduto()      {
+        $AuxProduto = new ProdutoModel();
+        $Produtos = $AuxProduto->ListaAllProduto();
+        return $Produtos;
+    }
+    public function ExportCSVProdutos()      {
+        $AuxProduto = new ProdutoModel();
+        $Produtos = $AuxProduto->ExportCSVProdutos();
         return $Produtos;
     }
     public function ListaProdutoPorID($idUsu)      {
@@ -37,10 +47,19 @@ class ProdutoControll{
         $Produtos = $AuxProduto->ObterProduto($id);
         return $Produtos;
     }
+    public function ItemsAleatorios()      {
+        $AuxProduto = new ProdutoModel();
+        $Produtos = $AuxProduto->ItemsAleatorios();
+        return $Produtos;
+    }
     public function AtualizarQuantidade($id, $qtde) {
         $AuxProduto = new ProdutoModel();
         $AuxProduto->AtualizarQuantidade($id, $qtde);
     }
+
+    
+
+
 }
 
 

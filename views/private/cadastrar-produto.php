@@ -6,12 +6,11 @@ require_once("../../controller/produtoController.php");
 require_once("../../controller/TipoProdutoController.php");
 include_once('./menu.php');
 
-$produtoDAO = new TipoProdutoController();
-$TipoProd = $produtoDAO->ListarTipoProduto();
-
+$AuxControllTipoUsu = new TipoProdutoController();
+$TipoProd = $AuxControllTipoUsu->ListarTipoProduto();
 
 if (isset($_POST['cadastrar'])) {
-    if(isset($_POST['nome'],$_POST['tipo_prod'],$_POST['preco_custo'],$_POST['preco_venda'],$_POST['descricao'],$_POST['quantidade'],$_POST['desconto'])){
+    if (isset($_POST['nome'], $_POST['tipo_prod'], $_POST['preco_custo'], $_POST['preco_venda'], $_POST['descricao'], $_POST['quantidade'], $_POST['desconto'])) {
         $produtos = new ProdutoModel(
             null,
             $_POST['nome'],
@@ -34,7 +33,7 @@ if (isset($_POST['cadastrar'])) {
             // var_dump(__DIR__ . "/" . $_FILES['image']['name']);
         }
         // var_dump($produtos); exit();
-    
+
         $produtoDAO = new ProdutoControll();
         $produtoDAO->CadastroProdutoControll($produtos);
     } else {
@@ -58,7 +57,26 @@ if (isset($_POST['cadastrar'])) {
         <!--CONTEUDO -->
         <div class="w-100 p-3 h-100 row justify-content-md-center">
             <div class="w-75">
-                <form class="w-80" method="POST" enctype="multipart/form-data">
+                <div class="w-100 d-flex justify-content-md-center align-items-center">
+                    <div class="card shadow mb-4 w-75">
+                        <!-- Card Header - Dropdown -->
+                        <div
+                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">Importar arquivo CSV </h6>
+                        </div>
+                        <!-- Card Body -->
+                        <form class="card w-80 mb-5 radius-ajuste ajuste-flex-import p-2 d-flex justify-content-md-center align-items-center" method="POST" action="import-file.php" enctype="multipart/form-data">
+                            <div class="card-body d-flex flex-column align-itens-center justify-content-md-center">
+                                <input id="file-csv" name="file-csv" type="file" class="m-2" data-show-preview="false">
+                                <button id="enviar" name="enviar" type="submit" class="btn btn-primary w-ajuste-btn-import m-2">Enviar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <hr />
+                <div class="w-100 d-flex justify-content-md-center">ou</div>
+                <hr>
+                <form class="w-80 mt-5  bg-light shadow radius-ajuste p-5" method="POST" enctype="multipart/form-data">
                     <div class="row">
                         <div class="mb-3 col">
                             <label for="NomeProduto" class="form-label">Nome do Produto</label>
@@ -109,7 +127,7 @@ if (isset($_POST['cadastrar'])) {
                             </div>
                         </div>
                     </div>
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-5 d-flex flex-column justify-content-md-left">
                         <label for="image">Envie uma image do produto</label>
                         <input id="image" name="image" type="file" accept="imagem/*" placeholder="Envie uma image">
                     </div>

@@ -282,6 +282,13 @@ INNER JOIN Cidade ON usuario.usu_cidade = Cidade.id_cidade
 GROUP BY Cidade.nome_cidade;
 
 
+SELECT p.prod_nome, SUM(ven_valor) as TOTAL, ven_quantidade, ven_prod_id as Total from venda
+INNER JOIN produtos as p ON venda.ven_prod_id = p.prod_id
+GROUP BY p.prod_nome, ven_prod_id, ven_quantidade;
+
+
+select * from venda;
+
 SELECT Tipos_Produtos.tipo_prod_nome, COUNT(*) as Quantidade_de_produtos FROM produtos
 LEFT JOIN Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod
 where prod_status = 1
@@ -308,31 +315,133 @@ SELECT prod_nome, prod_quantidade,
 
 select * from produtos where prod_id = 31;
 
-UPDATE produtos set prod_quantidade = 4 where prod_id = 30;
 
 INSERT INTO Venda (ven_prod_id, ven_usu_id, ven_quantidade, ven_valor) values (29,12,5,100);
 
 SELECT 
-    prod_nome, 
-    SUM(ven_quantidade) AS Quantidade, 
-    usu_nome 
-FROM 
-    venda
-INNER JOIN 
-    produtos 
-    ON venda.ven_prod_id = produtos.prod_id 
-INNER JOIN 
-    usuario 
-    ON venda.ven_usu_id = usuario.usu_id
-GROUP BY 
-    prod_nome, usu_nome;
+ prod_imagem, prod_nome, ven_quantidade, usu_nome, ven_valor, ven_dt
+FROM venda
+INNER JOIN produtos ON venda.ven_prod_id = produtos.prod_id 
+INNER JOIN usuario ON venda.ven_usu_id = usuario.usu_id;
 
 
-select * from venda;
+select * from venda where ven_usu_id = 12 ORDER BY ven_id DESC
 DELETE FROM venda where ven_usu_id = 12;
 
+TRUNCATE TABLE Venda;
+
+use LOJA_ESPORTIVA;
 
 SELECT prod_id, produtos.prod_nome, produtos.prod_tipo, produtos.prod_descricao, produtos.prod_custo, produtos.prod_venda, produtos.prod_desconto, produtos.prod_quantidade, produtos.prod_imagem FROM produtos
                         INNER JOIN Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod  
                         INNER JOIN usuario ON produtos.prod_usu_cad = usuario.usu_id
                         WHERE produtos.prod_id = 31 AND prod_status = 1;
+
+
+
+
+
+
+
+SELECT p.prod_nome, SUM(ven_valor) as TOTAL, ven_quantidade, ven_prod_id as id from venda
+                    INNER JOIN produtos as p ON venda.ven_prod_id = p.prod_id
+                    GROUP BY p.prod_nome, ven_prod_id, ven_quantidade;
+
+
+select * from Tipos_Produtos;
+
+SELECT prod_nome, SUM(ven_quantidade) as Quantidade from venda
+INNER JOIN produtos ON venda.ven_prod_id = prod_id
+group by prod_nome ORDER BY Quantidade DESC;
+
+
+select tipo_prod_nome, SUM(ven_quantidade) as Quantidade from produtos
+INNER JOIN Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod
+INNER JOIN (SELECT * from venda) Venda on Venda.ven_prod_id = produtos.prod_id
+GROUP BY tipo_prod_nome ORDER BY Quantidade DESC;
+
+SELECT p.prod_nome, SUM(ven_valor) as TOTAL, ven_quantidade, ven_prod_id as id from venda
+INNER JOIN produtos as p ON venda.ven_prod_id = p.prod_id
+GROUP BY p.prod_nome, ven_prod_id, ven_quantidade;
+
+SELECT DATENAME(month, ven_dt) AS Mes, YEAR(ven_dt) AS Ano, SUM(ven_quantidade) AS ProdutosVendidos FROM venda
+                    GROUP BY YEAR(ven_dt), DATENAME(month, ven_dt),  MONTH(ven_dt)
+                    ORDER BY MONTH(ven_dt) ASC;
+
+SELECT 
+    DATENAME(month, ven_dt) AS Mes,
+    YEAR(ven_dt) AS Ano,
+    SUM(ven_valor) AS Total_Mes
+FROM 
+    venda
+GROUP BY 
+    DATENAME(month, ven_dt), YEAR(ven_dt), MONTH(ven_dt)
+ORDER BY 
+    YEAR(ven_dt), MONTH(ven_dt);
+
+DELETE FROM venda where ven_id = 24;
+select * from venda;
+
+SELECT 
+    MONTH(ven_dt) AS Mes, 
+    AVG(ven_valor) AS Media_Anual
+FROM 
+    venda
+GROUP BY 
+    MONTH(ven_dt)
+ORDER BY 
+    Mes;
+
+SELECT TOP (1) SUM(ven_valor) as TOTAL ,ven_dt
+                        FROM 
+                            venda
+                        GROUP BY venda.ven_dt
+                            ORDER BY ven_dt DESC
+
+
+
+
+SELECT DISTINCT  prod_imagem, prod_nome, ven_quantidade, usu_nome, ven_valor, ven_dt, cod_venda, ven_id
+                    FROM venda
+                    INNER JOIN produtos ON venda.ven_prod_id = produtos.prod_id 
+                    INNER JOIN usuario ON venda.ven_usu_id = usuario.usu_id ORDER BY ven_id DESC;
+
+SELECT 
+                    prod_imagem, prod_nome, ven_quantidade, usu_nome, ven_valor, ven_dt
+                    FROM venda
+                    INNER JOIN produtos ON venda.ven_prod_id = produtos.prod_id 
+                    INNER JOIN usuario ON venda.ven_usu_id = usuario.usu_id ORDER BY ven_dt DESC;
+
+
+SELECT 
+                    prod_imagem, prod_nome, ven_quantidade, usu_nome, ven_valor, ven_dt, cod_venda
+                    FROM venda
+                    INNER JOIN produtos ON venda.ven_prod_id = produtos.prod_id 
+                    INNER JOIN usuario ON venda.ven_usu_id = usuario.usu_id ORDER BY ven_dt DESC;
+
+USE LOJA_ESPORTIVA;
+
+SELECT * from Venda ORDER BY ven_dt DESC OFFSET 1 ROWS FETCH NEXT 10 ROWS ONLY;
+
+SELECT prod_id,
+                        produtos.prod_nome, 
+                        Tipos_Produtos.tipo_prod_nome,
+                        produtos.prod_descricao, 
+                        produtos.prod_custo, 
+                        produtos.prod_venda, 
+                        produtos.prod_quantidade,
+                        produtos.prod_desconto,
+                        produtos.prod_imagem, 
+                        produtos.prod_dt_ini, 
+                        usuario.usu_nome AS vendedor_nome
+                    FROM 
+                        produtos
+                    INNER JOIN 
+                        Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod  
+                    INNER JOIN 
+                        usuario ON produtos.prod_usu_cad = usuario.usu_id
+                        WHERE prod_status = 1 ORDER BY prod_id OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY;
+
+SELECT * FROM produtos;
+
+UPDATE usuario SET usu_senha = '123';
