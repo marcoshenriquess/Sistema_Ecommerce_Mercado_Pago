@@ -2868,4 +2868,24 @@
 }{
     "resource": "https:\/\/api.mercadolibre.com\/merchant_orders\/25949346105",
     "topic": "merchant_order"
+}{
+    "resource": "https:\/\/api.mercadolibre.com\/merchant_orders\/26315407738",
+    "topic": "merchant_order"
+}{
+    "resource": "96468572591",
+    "topic": "payment"
+}{
+    "action": "payment.created",
+    "api_version": "v1",
+    "data": {
+        "id": "96468572591"
+    },
+    "date_created": "2024-12-19T11:26:42Z",
+    "id": 117910882986,
+    "live_mode": true,
+    "type": "payment",
+    "user_id": "2113437052"
+}{
+    "resource": "https:\/\/api.mercadolibre.com\/merchant_orders\/26315407738",
+    "topic": "merchant_order"
 }

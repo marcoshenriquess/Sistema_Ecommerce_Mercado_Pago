@@ -45,7 +45,7 @@ class Pagamento
                 "expires" => false,
                 "external_reference" => $User['usu_id'],
                 "items" => $itemsinCar,
-                "notification_url" => 'https://1a45-177-124-64-94.ngrok-free.app/project/API/notificacao.php',
+                "notification_url" => 'https://f1c2-177-124-64-94.ngrok-free.app/project/API/notificacao.php',
                 "payment_methods" => [
                     "excluded_payment_types" => [
                         [

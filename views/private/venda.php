@@ -53,33 +53,35 @@ $List = $UsuarioCont->ObterPagVenda($pagina);
                             class="fas fa-download fa-sm text-white-50"></i> Relatório de Vendas</a>
                 </div>
             </div>
-            <table class="table table-hover shadow border-radius p-5 align-middle border-top-none">
-                <thead class="border-radius fundo_thead">
-                    <tr class="fundo_thead">
-                        <th class="w-auto" scope="col">Codigo</th>
-                        <th style="width: 300px;" scope="col">Cliente</th>
-                        <th scope="col">Produtos</th>
-                        <th scope="col">Quantidade</th>
-                        <th scope="col">Valor</th>
-                        <th scope="col">Data</th>
-                    </tr>
-                </thead>
-                <tbody class="m-2">
-                    <?php foreach ($List as $usuario): ?>
-                        <tr>
-                            <th><?= $usuario['cod_venda'] ?></th>
-                            <th><?= $usuario['usu_nome'] ?></th>
-                            <td style="max-width: 15ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= $usuario['prod_nome'] ?></td>
-                            <td><?= $usuario['ven_quantidade'] ?></td>
-                            <td>R$ &nbsp;<?php
-                                            $Total = $usuario['ven_valor'] * $usuario['ven_quantidade'];
-                                            echo number_format($Total, 2, ',', '.')
-                                            ?></td>
-                            <td><?= $usuario['ven_dt'] ?></td>
+            <?php if ($List) { ?>
+                <table class="table table-hover shadow border-radius p-5 align-middle border-top-none">
+                    <thead class="border-radius fundo_thead">
+                        <tr class="fundo_thead">
+                            <th class="w-auto" scope="col">Codigo</th>
+                            <th style="width: 300px;" scope="col">Cliente</th>
+                            <th scope="col">Produtos</th>
+                            <th scope="col">Quantidade</th>
+                            <th scope="col">Valor</th>
+                            <th scope="col">Data</th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="m-2">
+                        <?php foreach ($List as $usuario): ?>
+                            <tr>
+                                <th><?= $usuario['cod_venda'] ?></th>
+                                <th><?= $usuario['usu_nome'] ?></th>
+                                <td style="max-width: 15ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= $usuario['prod_nome'] ?></td>
+                                <td><?= $usuario['ven_quantidade'] ?></td>
+                                <td>R$ &nbsp;<?php
+                                                $Total = $usuario['ven_valor'] * $usuario['ven_quantidade'];
+                                                echo number_format($Total, 2, ',', '.')
+                                                ?></td>
+                                <td><?= $usuario['ven_dt'] ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php } else { echo "<div class='w-100 d-flex justify-content-md-center align-itens-center'><p>Nenhuma Venda Feita</p></div> "; } ?>
 
             <div class="d-flex justify-content-md-center align-items-center mt-2 p-4">
                 <nav aria-label="Page navigation example">
@@ -94,7 +96,7 @@ $List = $UsuarioCont->ObterPagVenda($pagina);
                             <p class="page-link"><?= $pagina ?></p>
                         </li>
 
-                        <?php if ($pagina+1 < $TotalPags) { ?>
+                        <?php if ($pagina + 1 < $TotalPags) { ?>
                             <li class="page-item"><a class="page-link" href="?pagina=<?= $pagina + 1 ?>">Proximo</a></li>
                         <?php } else { ?>
                             <li class="page-item disabled"><a class="page-link" href="?pagina=<?= $pagina + 1 ?>">Proximo</a></li>

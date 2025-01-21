@@ -3,28 +3,48 @@
 include_once("../../models/permissao.php");
 require_once("../../models/produto.php");
 require_once("../../controller/produtoController.php");
-require_once("../../controller/TipoProdutoController.php");
+require_once("../../controller/CategoriaPaiController.php");
+require_once("../../controller/CategoriaFilhoController.php");
+require_once("../../controller/MarcaController.php");
 include_once('./menu.php');
 
-$AuxControllTipoUsu = new TipoProdutoController();
-$TipoProd = $AuxControllTipoUsu->ListarTipoProduto();
+$AuxControllPai = new CategoriaPaiController();
+$CategoriaPai = $AuxControllPai->ListaCategorias();
+
+
+$AuxMarcaControll = new MarcaController();
+$MarcaList = $AuxMarcaControll->ListarMarcas();
 
 if (isset($_POST['cadastrar'])) {
-    if (isset($_POST['nome'], $_POST['tipo_prod'], $_POST['preco_custo'], $_POST['preco_venda'], $_POST['descricao'], $_POST['quantidade'], $_POST['desconto'])) {
+    if (isset(
+        $_POST['nome'],
+        $_POST['descricao'],
+        $_POST['catPai'],
+        $_POST['catFilho'],
+        $_POST['marca'],
+        $_POST['estoque'],
+        $_POST['preco_custo'],
+        $_POST['preco_venda'],
+        $_POST['desconto'],
+    )) {
         $produtos = new ProdutoModel(
             null,
             $_POST['nome'],
-            $_POST['tipo_prod'],
+            $_POST['descricao'],
+            null,
+            $_POST['catPai'],
+            $_POST['catFilho'],
+            $_POST['marca'],
+            null ,
+            $_POST['estoque'],
             $_POST['preco_custo'],
             $_POST['preco_venda'],
-            $_POST['descricao'],
-            $_POST['quantidade'],
             $_POST['desconto'],
             null,
+            0,
             $_SESSION['usuario_logado']['usu_id'],
             null,
             null,
-            null
         );
         if (isset($_FILES['image'])) {
             $produtos->setimagem($_FILES['image']['name']);
@@ -32,7 +52,6 @@ if (isset($_POST['cadastrar'])) {
             // var_dump($produtos->getImagemDiretorio());
             // var_dump(__DIR__ . "/" . $_FILES['image']['name']);
         }
-        // var_dump($produtos); exit();
 
         $produtoDAO = new ProdutoControll();
         $produtoDAO->CadastroProdutoControll($produtos);
@@ -82,13 +101,30 @@ if (isset($_POST['cadastrar'])) {
                             <label for="NomeProduto" class="form-label">Nome do Produto</label>
                             <input id="nome" name="nome" type="text" class="form-control" id="NomeProduto" required>
                         </div>
-                        <div class="form-group col-md-auto">
-                            <label for="TipoProduto">Tipo do Produto</label>
-                            <select id="tipo_prod" name="tipo_prod" class="form-control" id="TipoProduto" required>
+                        <div class="form-group mb-3 col-4">
+                            <label for="marca">Marca</label>
+                            <select id="marca" name="marca" class="form-control" id="marca" required>
                                 <option selected disabled>-- SELECIONAR --</option>
-                                <?php foreach ($TipoProd as $tipo): ?>
-                                    <option value="<?= $tipo['id_tipo_prod'] ?>"><?= $tipo['tipo_prod_nome'] ?></option>
+                                <?php foreach ($MarcaList as $marca): ?>
+                                    <option value="<?= $marca['marc_id'] ?>"><?= $marca['marc_nome'] ?></option>
                                 <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group mb-3 col">
+                            <label for="CategoriaPai">Categoria Pai</label>
+                            <select id="catPai" name="catPai" class="form-control" id="CategoriaPai" onchange="javascript:mostraCatFilho(this)" required>
+                                <option selected disabled>-- SELECIONAR --</option>
+                                <?php foreach ($CategoriaPai as $tipo): ?>
+                                    <option value="<?= $tipo['catPai_id'] ?>"><?= $tipo['catPai_nome'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3 col">
+                            <label for="CategoriaFilho">Categoria Filho</label>
+                            <select id="catFilho" name="catFilho" class="form-control" id="CategoriaFilho" required disabled>
+                                <option selected disabled>-- SELECIONAR --</option>
                             </select>
                         </div>
                     </div>
@@ -121,9 +157,9 @@ if (isset($_POST['cadastrar'])) {
                             </div>
                         </div>
                         <div class="input-group mb-3 col">
-                            <label for="quantidade">Quantidade</label>
+                            <label for="estoque">Estoque</label>
                             <div class="input-group">
-                                <input id="quantidade" name="quantidade" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" required>
+                                <input id="estoque" name="estoque" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" required>
                             </div>
                         </div>
                     </div>

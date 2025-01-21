@@ -1,7 +1,29 @@
 USE LOJA_ESPORTIVA;
 
+CREATE TABLE Categoria_Pai(
+	catPai_id INT IDENTITY(1,1) primary key,
+	catPai_nome varchar(100) NOT NULL
+);
 
--- Criação da tabela Carrinho
+CREATE TABLE Esporte(
+	esp_id INT IDENTITY(1,1) primary key,
+	esp_nome varchar(100) NOT NULL
+);
+
+CREATE TABLE Times(
+	time_id INT IDENTITY(1,1) primary key,
+	time_nome varchar(130) NOT NULL,
+);
+
+CREATE TABLE Categoria_Filho(
+	catFilho_id INT IDENTITY(1,1) primary key,
+	catFilho_nome varchar(100) NOT NULL,
+	catFilho_catPai INT NOT NULL,
+	catFilho_esporte INT NULL,
+	FOREIGN KEY (catFilho_catPai) REFERENCES Categoria_Pai(catPai_id),
+	FOREIGN KEY (catFilho_esporte) REFERENCES Esporte(esp_id),
+);
+
 CREATE TABLE Carrinho(
 	car_id INT IDENTITY(1,1) PRIMARY KEY,
 	car_valor DECIMAL(10, 2) NOT NULL,
@@ -11,19 +33,16 @@ CREATE TABLE Carrinho(
 	FOREIGN KEY (car_prod_id) REFERENCES produtos(prod_id),
 );
 
--- Criação da tabela Tipos_Users
 CREATE TABLE Tipos_Users (
     id_tipo_user INT IDENTITY(1,1) PRIMARY KEY,
     tipo_user_nome VARCHAR(20) NOT NULL
 );
 
--- Criação da tabela Tipos_Produtos
 CREATE TABLE Tipos_Produtos (
     id_tipo_prod INT IDENTITY(1,1) PRIMARY KEY,
     tipo_prod_nome VARCHAR(90) NOT NULL
 );
 
--- Criação da tabela Estado
 CREATE TABLE Estado (
     id_estado INT IDENTITY(1,1) PRIMARY KEY,
     nome_estado VARCHAR(2) NOT NULL
@@ -39,13 +58,11 @@ CREATE TABLE Venda(
 	FOREIGN KEY (ven_prod_id) REFERENCES produtos(prod_id),
 );
 
--- Criação da tabela Cidade
-CREATE TABLE Cidade (
-    id_cidade INT IDENTITY(1,1) PRIMARY KEY,
-    nome_cidade VARCHAR(100) NOT NULL
+CREATE TABLE Marca (
+    marc_id INT IDENTITY(1,1) PRIMARY KEY,
+    marc_nome VARCHAR(100) NOT NULL
 );
 
--- Criação da tabela Usuarios com chave estrangeira para Tipos_Users
 CREATE TABLE usuario (
     usu_id INT IDENTITY(1,1) PRIMARY KEY,
     usu_nome VARCHAR(150) NOT NULL,
@@ -67,32 +84,229 @@ CREATE TABLE usuario (
 	FOREIGN KEY (usu_cidade) REFERENCES Cidade(id_cidade),
 );
 
--- Criação da tabela Produtos com chave estrangeira para Tipos_Produtos e Usuarios
 CREATE TABLE produtos (
     prod_id INT IDENTITY(1,1) PRIMARY KEY,
     prod_nome VARCHAR(150) NOT NULL,
-    prod_tipo INT, -- Tipo de produto referenciando a tabela Tipos_Produtos
+    prod_descricao TEXT NULL,
+    prod_imagem VARCHAR(255) NULL,
+	prod_categoria_pai INT NOT NULL,
+    prod_categoria_filho INT NOT NULL, 
+	prod_marca INT NULL,
+	prod_tamanho VARCHAR(100) NULL,
+	prod_estoque INT null,
     prod_custo DECIMAL(10, 2) NOT NULL,
     prod_venda DECIMAL(10, 2) NOT NULL,
-    prod_descricao TEXT,
-	prod_quantidade INT,
-    prod_desconto DECIMAL(5, 2),
-    prod_imagem VARCHAR(255),
-    prod_usu_cad INT,
+    prod_desconto DECIMAL(5, 2) null,
+	prod_avaliacao DECIMAL(2, 1) null ,
+	prod_quantidadeVenda INT null,
+    prod_usu_cad INT NOT NULL,
 	prod_dt_ini DATE NOT NULL,
 	prod_status bit NOT NULL,
 	prod_dt_exc DATE NULL,
-    FOREIGN KEY (prod_usu_cad) REFERENCES usuario(usu_id) ON DELETE SET NULL,
-    FOREIGN KEY (prod_tipo) REFERENCES Tipos_Produtos(id_tipo_prod) ON DELETE SET NULL
+    FOREIGN KEY (prod_usu_cad) REFERENCES usuario(usu_id),
+    FOREIGN KEY (prod_categoria_pai) REFERENCES Categoria_Pai(catPai_id),
+    FOREIGN KEY (prod_categoria_filho) REFERENCES Categoria_Filho(catFilho_id),
+    FOREIGN KEY (prod_marca) REFERENCES Marca(marc_id),
 );
 
+-- ESPORTES --
+INSERT INTO Esporte (esp_nome) VALUES ('Basquete');
+INSERT INTO Esporte (esp_nome) VALUES ('Futebol');
+INSERT INTO Esporte (esp_nome) VALUES ('Tênis');
+INSERT INTO Esporte (esp_nome) VALUES ('Baseball');
+INSERT INTO Esporte (esp_nome) VALUES ('Futebol Americano');
+INSERT INTO Esporte (esp_nome) VALUES ('Natação');
+INSERT INTO Esporte (esp_nome) VALUES ('Corrida');
+INSERT INTO Esporte (esp_nome) VALUES ('Trilha');
+INSERT INTO Esporte (esp_nome) VALUES ('Trekking');
+INSERT INTO Esporte (esp_nome) VALUES ('Vôlei');
+INSERT INTO Esporte (esp_nome) VALUES ('Golfe');
+
+-- TIMES --
+INSERT INTO Times (time_nome) VALUES ('Los Angeles Lakers');
+INSERT INTO Times (time_nome) VALUES ('Chicago Bulls');
+INSERT INTO Times (time_nome) VALUES ('Golden State Warriors');
+
+INSERT INTO Times (time_nome) VALUES ('Barcelona');
+INSERT INTO Times (time_nome) VALUES ('Real Madrid');
+INSERT INTO Times (time_nome) VALUES ('Manchester United');
+
+INSERT INTO Times (time_nome) VALUES ('Novak Djokovic Team');
+INSERT INTO Times (time_nome) VALUES ('Roger Federer Team');
+INSERT INTO Times (time_nome) VALUES ('Rafael Nadal Team');
+
+INSERT INTO Times (time_nome) VALUES ('New York Yankees');
+INSERT INTO Times (time_nome) VALUES ('Los Angeles Dodgers');
+INSERT INTO Times (time_nome) VALUES ('Boston Red Sox');
+
+INSERT INTO Times (time_nome) VALUES ('New England Patriots');
+INSERT INTO Times (time_nome) VALUES ('Dallas Cowboys');
+INSERT INTO Times (time_nome) VALUES ('San Francisco 49ers');
+
+INSERT INTO Times (time_nome) VALUES ('Michael Phelps Team');
+INSERT INTO Times (time_nome) VALUES ('Katie Ledecky Team');
+INSERT INTO Times (time_nome) VALUES ('Caeleb Dressel Team');
+
+INSERT INTO Times (time_nome) VALUES ('Salomon Trail Runners');
+INSERT INTO Times (time_nome) VALUES ('The North Face Explorers');
+INSERT INTO Times (time_nome) VALUES ('Columbia Trekking Club');
+
+INSERT INTO Times (time_nome) VALUES ('Brazil Volleyball Team');
+INSERT INTO Times (time_nome) VALUES ('USA Volleyball Team');
+INSERT INTO Times (time_nome) VALUES ('Russia Volleyball Team');
+
+INSERT INTO Times (time_nome) VALUES ('Tiger Woods Team');
+INSERT INTO Times (time_nome) VALUES ('Rory McIlroy Team');
+INSERT INTO Times (time_nome) VALUES ('Phil Mickelson Team');
+
+-- Categoria PAI --
+INSERT INTO Categoria_Pai (catPai_nome) VALUES ('Roupas Esportivas');
+INSERT INTO Categoria_Pai (catPai_nome) VALUES ('Calçados Esportivos');
+INSERT INTO Categoria_Pai (catPai_nome) VALUES ('Acessórios Esportivos');
+INSERT INTO Categoria_Pai (catPai_nome) VALUES ('Acessórios de Esportes');
+INSERT INTO Categoria_Pai (catPai_nome) VALUES ('Esportes Outdoor');
+INSERT INTO Categoria_Pai (catPai_nome) VALUES ('Suplementação e Nutrição');
+INSERT INTO Categoria_Pai (catPai_nome) VALUES ('Esportes de Inverno');
+INSERT INTO Categoria_Pai (catPai_nome) VALUES ('Acessórios de Saúde e Bem-Estar');
+
+-- Categoria Filho -- 
+-- Roupas Esportivas
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Camisetas Dry Fit', 1);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Shorts de Corrida', 1);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Leggings Fitness', 1);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Casacos de Treino', 1);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Regatas para Academia', 1);
+
+-- Calçados Esportivos
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Tênis de Corrida', 2);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Chuteiras de Futebol', 2);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Botas de Hiking', 2);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Tênis para Basquete', 2);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Tênis de Treino', 2);
+
+-- Acessórios Esportivos
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Luvas de Musculação', 3);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Cintos de Levantamento', 3);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Munhequeiras de Suporte', 3);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Bandanas para Esporte', 3);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Meias Compressivas', 3);
+
+-- Acessórios de Esportes
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Bolas de Futebol', 4);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Raquetes de Tênis', 4);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Capacetes para Ciclismo', 4);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Óculos de Natação', 4);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Pranchas de Surf', 4);
+
+-- Esportes Outdoor
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Barracas de Camping', 5);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Mochilas para Hiking', 5);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Garrafas Térmicas', 5);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Lanternas Portáteis', 5);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Mapas e Guias de Trilhas', 5);
+
+-- Suplementação e Nutrição
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Whey Protein', 6);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Creatina', 6);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Barras de Proteína', 6);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Vitaminas e Minerais', 6);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('BCAAs', 6);
+
+-- Esportes de Inverno
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Jaquetas de Esqui', 7);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Luvas Térmicas', 7);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Capacetes de Snowboard', 7);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Óculos de Neve', 7);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Botas de Neve', 7);
+
+-- Acessórios de Saúde e Bem-Estar
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Faixas Elásticas', 8);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Monitores de Freqüência Cardíaca', 8);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Rolos de Liberação Miofascial', 8);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Balanças Inteligentes', 8);
+INSERT INTO Categoria_Filho (catFilho_nome, catFilho_catPai) VALUES ('Bolsas de Gelo', 8);
+
+
+-- MARCAS --
+INSERT INTO Marca (marc_nome) VALUES ('Adidas');
+INSERT INTO Marca (marc_nome) VALUES ('Puma');
+INSERT INTO Marca (marc_nome) VALUES ('Reebok');
+INSERT INTO Marca (marc_nome) VALUES ('Under Armour');
+INSERT INTO Marca (marc_nome) VALUES ('Asics');
+INSERT INTO Marca (marc_nome) VALUES ('New Balance');
+INSERT INTO Marca (marc_nome) VALUES ('Fila');
+INSERT INTO Marca (marc_nome) VALUES ('Mizuno');
+INSERT INTO Marca (marc_nome) VALUES ('Columbia');
+INSERT INTO Marca (marc_nome) VALUES ('The North Face');
+INSERT INTO Marca (marc_nome) VALUES ('Salomon');
+INSERT INTO Marca (marc_nome) VALUES ('Champion');
+INSERT INTO Marca (marc_nome) VALUES ('Wilson');
+INSERT INTO Marca (marc_nome) VALUES ('Spalding');
+INSERT INTO Marca (marc_nome) VALUES ('Umbro');
+INSERT INTO Marca (marc_nome) VALUES ('Lotto');
+INSERT INTO Marca (marc_nome) VALUES ('Kappa');
+INSERT INTO Marca (marc_nome) VALUES ('Everlast');
+INSERT INTO Marca (marc_nome) VALUES ('Decathlon');
+INSERT INTO Marca (marc_nome) VALUES ('Oakley');
+
+
+
+SELECT catFilho_nome, catPai_nome ,esp_nome FROM Categoria_Filho CF
+INNER JOIN Categoria_Pai CP ON CF.catFilho_catPai = CP.catPai_id
+INNER JOIN Esporte EP ON CF.catFilho_esporte = EP.esp_id;
+
+SELECT * FROM Categoria_Pai;
+	SELECT * FROM Categoria_Filho;
+	SELECT * FROM produtos;
+SELECT * FROM Marca
+SELECT * FROM Esporte;
+
+select * from Categoria_Filho where catFilho_catPai = 6;
+
+DELETE FROM Categoria_Filho WHERE catFilho_catPai = 3;
 
 -- Inserindo registros na tabela Tipos_users
 insert into Tipos_Users (tipo_user_nome) values ('Administrador');
 insert into Tipos_Users (tipo_user_nome) values ('Vendedor');
 insert into Tipos_Users (tipo_user_nome) values ('Cliente');
 
-
+INSERT INTO produtos (
+                        prod_nome,
+                        prod_descricao,
+                        prod_imagem,
+                        prod_categoria_pai,
+                        prod_categoria_filho,
+                        prod_marca,
+                        prod_tamanho,
+                        prod_estoque,
+                        prod_custo,
+                        prod_venda,
+                        prod_desconto,
+                        prod_avaliacao,
+                        prod_quantidadeVenda,
+                        prod_usu_cad,
+                        prod_dt_ini,
+                        prod_status,
+                        prod_dt_exc
+                    ) VALUES (
+                        'TEste',
+                        'TEste',
+                        'null.png',
+                        1,
+                        30,
+                        1,
+                        null,
+                        12,
+                        12,
+                        12,
+                        12,
+                        null,
+                        null,
+                        11,
+                        GETDATE(),
+                        1,
+                        NULL
+                    );
 
 -- Inserindo registros na tabela usuarios
 -- Cliente 1
@@ -144,8 +358,8 @@ INSERT INTO Tipos_Produtos (tipo_prod_nome) VALUES ('Suplementos');
 INSERT INTO Tipos_Produtos (tipo_prod_nome) VALUES ('Equipamentos de Camping');
 INSERT INTO Tipos_Produtos (tipo_prod_nome) VALUES ('Equipamentos de Academia');
 
-INSERT INTO produtos (nome, tipo_prod, preco_custo, preco_venda, descricao, desconto, imagem, id_vendedor) 
-VALUES ('Camiseta Esportiva da Nike', 1, 50.00, 70.00, 'Camiseta leve e respirável, ideal para atividades físicas.', NULL, 'camiseta_esportiva.jpg', 1);
+INSERT INTO produtos (nome,descricao, tipo_prod, preco_custo, preco_venda,  desconto, imagem, id_vendedor) 
+VALUES ('Camiseta Esportiva da Nike', 'Camiseta leve e respirável, ideal para atividades físicas.', 1, 50.00, 70.00,  NULL, 'camiseta_esportiva.jpg', 1);
 
 INSERT INTO produtos (nome, tipo_prod, preco_custo, preco_venda, descricao, desconto, imagem, id_vendedor) 
 VALUES ('Bola de Futebol', 3, 120.00, 150.00, 'Bola de futebol profissional com garantia de qualidade.', NULL, 'bola_futebol.jpg', 2);
