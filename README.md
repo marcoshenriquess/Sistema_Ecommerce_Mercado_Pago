@@ -1,9 +1,10 @@
-Este sistema é um site de e-commerce desenvolvido inteiramente em PHP e JavaScript. Sua interface foi construída com o Bootstrap 5, priorizando as funcionalidades do sistema, enquanto o design do front-end foi simplificado.
+Apresentação do Projeto – E-commerce em PHP e JavaScript
 
-O sistema oferece três tipos de login: Cliente, Funcionário e Administrador:
+Este sistema é uma plataforma de e-commerce desenvolvida utilizando PHP e JavaScript, com interface construída em Bootstrap 5. O foco principal do projeto é a funcionalidade e eficiência na gestão de produtos e usuários, enquanto o design do front-end foi mantido de forma intuitiva e simplificada.
 
-Cliente: Tem acesso à "vitrine" do site, onde pode visualizar os produtos disponíveis, adicioná-los ao carrinho e finalizar a compra. O pagamento é integrado com a API do Mercado Pago, garantindo mais segurança e confiabilidade nas transações.
-Funcionário: Possui acesso à área administrativa, onde pode visualizar, cadastrar, editar e excluir produtos.
-Administrador: Conta com acesso total ao CRUD (Create, Read, Update, Delete) de produtos e também ao gerenciamento de usuários.
+O sistema conta com três níveis de acesso:
 
-O sistema foi projetado para ser funcional e seguro, atendendo às necessidades tanto dos clientes quanto da equipe de gestão.
+Cliente: Pode navegar pela vitrine virtual, visualizar produtos disponíveis, adicioná-los ao carrinho e finalizar a compra. O pagamento é processado por meio da API do Mercado Pago, garantindo maior segurança e confiabilidade nas transações.
+Funcionário: Possui acesso à área administrativa, permitindo visualizar, cadastrar, editar e excluir produtos, contribuindo para a organização e manutenção do catálogo da loja.
+Administrador: Conta com permissões completas para gerenciar produtos e usuários, tendo controle total sobre o sistema.
+Este projeto foi desenvolvido com foco em funcionalidade, segurança e praticidade, atendendo às necessidades tanto dos clientes quanto da equipe de gestão.
