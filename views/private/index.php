@@ -364,7 +364,7 @@ $CategoriasVenda = $CatbVenAux->CategoriasVenda();
                                         <?php foreach ($CategoriasVenda as $key => $CatVen): ?>
                                             <tr>
                                                 <th scope="row"><?= 1 + $key ?></th>
-                                                <td><?= $CatVen['tipo_prod_nome'] ?></td>
+                                                <td><?= $CatVen['catPai_nome'] ?></td>
                                                 <td class="text-center"><?= $CatVen['Quantidade'] ?></td>
                                             </tr>
                                         <?php endforeach; ?>

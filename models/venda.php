@@ -229,10 +229,11 @@ class VendaModel
             $db = new Database();
             $this->conn = $db->getConnection();
 
-            $sql = 'SELECT tipo_prod_nome, SUM(ven_quantidade) as Quantidade from produtos
-                    INNER JOIN Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod
-                    INNER JOIN (SELECT * from venda) Venda on Venda.ven_prod_id = produtos.prod_id
-                    GROUP BY tipo_prod_nome ORDER BY Quantidade DESC;';
+            $sql = 'SELECT cp.catPai_nome, SUM(ven_quantidade) as Quantidade from produtos p
+                    INNER JOIN Categoria_Pai cp ON p.prod_categoria_pai = cp.catPai_id
+                    INNER JOIN Categoria_Filho cf ON p.prod_categoria_filho = cf.catFilho_id
+                    INNER JOIN (SELECT * from venda) Venda on Venda.ven_prod_id = p.prod_id
+                    GROUP BY catPai_nome ORDER BY Quantidade DESC;';
             $stmt = $this->conn->query($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

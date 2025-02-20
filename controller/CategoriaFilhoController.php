@@ -11,8 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     } else {
         echo json_encode(['error' => 'Invalid action']);
     }
-} else {
-    echo json_encode(['error' => 'Invalid request']);
 }
 
 function ListaCategorias()

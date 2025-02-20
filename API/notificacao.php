@@ -38,9 +38,9 @@ if ($codigo_venda[1] != $cod_venda_banco['cod_venda']) {
         $produto = $AuxControllProd->ObterProdutoControll($id);
 
         
-        if ($produto['prod_quantidade'] > 0) {
+        if ($produto['prod_estoque'] > 0) {
 
-            $EmEstoque = (int) $produto['prod_quantidade'];
+            $EmEstoque = (int) $produto['prod_estoque'];
             $QntdPosPag = $EmEstoque - $qntdRequisitada;
 
             $AuxControllProd->AtualizarQuantidade($id,  $QntdPosPag);

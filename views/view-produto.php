@@ -70,7 +70,7 @@ include_once('head.php');
                                 <p class="lead"><?= $prod['prod_descricao'] ?></p>
                                 <form class="h-auto" method="GET" action="index.php?id=">
                                     <input type="hidden" name="id" value="<?= $prod['prod_id'] ?>">
-                                    <?php if ($prod['prod_quantidade'] > 0) { ?>
+                                    <?php if ($prod['prod_estoque'] > 0) { ?>
                                         <a onclick="AddCarrinho(<?= $prod['prod_id'] ?>)"><button type="submit"
                                                 id="AddCarrinho" class="btn btn-warning p-2 w-100 ">Adicionar ao
                                                 Carrinho</button></a>
@@ -138,7 +138,7 @@ include_once('head.php');
                                             </div>
                                             <form class="h-auto" method="GET" action="index.php?id=">
                                                 <input type="hidden" name="id" value="<?= $item['prod_id'] ?>">
-                                                <?php if ($item['prod_quantidade'] > 0) { ?>
+                                                <?php if ($item['prod_estoque'] > 0) { ?>
                                                     <a onclick="AddCarrinho(<?= $item['prod_id'] ?>)"><button type="submit"
                                                             id="AddCarrinho" class="btn btn-warning p-2 w-100 ">Adicionar ao
                                                             Carrinho</button></a>

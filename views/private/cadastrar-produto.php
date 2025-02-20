@@ -27,6 +27,7 @@ if (isset($_POST['cadastrar'])) {
         $_POST['preco_venda'],
         $_POST['desconto'],
     )) {
+
         $produtos = new ProdutoModel(
             null,
             $_POST['nome'],
@@ -52,7 +53,6 @@ if (isset($_POST['cadastrar'])) {
             // var_dump($produtos->getImagemDiretorio());
             // var_dump(__DIR__ . "/" . $_FILES['image']['name']);
         }
-
         $produtoDAO = new ProdutoControll();
         $produtoDAO->CadastroProdutoControll($produtos);
     } else {

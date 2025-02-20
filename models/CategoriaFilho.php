@@ -51,7 +51,7 @@ class CategoriaFilhoModel
             $stmt->execute();
 
             // Fetch the results
-            $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Close the cursor
             $stmt->closeCursor();

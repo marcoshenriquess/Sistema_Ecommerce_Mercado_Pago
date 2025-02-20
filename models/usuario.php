@@ -194,12 +194,12 @@ class UsuarioModel
             $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
             
-            // $correctPassword = password_verify($senha, $usuario['usu_senha'] ?? '');
-            // if ($correctPassword) {
+            $correctPassword = password_verify($senha, $usuario['usu_senha'] ?? '');
+            if ($correctPassword) {
                 return $usuario;
-            // } else {
-            //     return false;
-            // }
+            } else {
+                return false;
+            }
         } catch (PDOException $e) {
             echo $e->getMessage();
         }

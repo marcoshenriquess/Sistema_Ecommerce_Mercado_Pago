@@ -14,7 +14,7 @@ if (isset($_GET["id"])) { // O $_GET['ID'] PEGA O ID DO PRODUTO QUE ESTÁ SENDO 
     // BUSCANDO O PRODUTO DE ACORDO COM AQUELE ID
     $produtoContr = new ProdutoControll();
     $prod = $produtoContr->ObterProdutoControll($_GET['id']);
-    if ($prod['prod_quantidade'] > 0) {
+    if (intval($prod['prod_estoque']) > 0) {
         // PEGANDO O ID DO ARRAY[PRODUTOS] E ARMAZENANDO EM UMA VARIÁVEL
         $produtoId = $prod['prod_id'];
         if (!isset($_SESSION['carrinho'])) { // DEFININDO O CARRINHO COMO VAZIO
@@ -38,7 +38,6 @@ if (isset($_GET["id"])) { // O $_GET['ID'] PEGA O ID DO PRODUTO QUE ESTÁ SENDO 
 // LISTANDO OS PRODUTOS EXISTENTES ARMAZENADO
 $AuxListProd = new ProdutoControll();
 $ListProd = $AuxListProd->ListaAllProduto();
-
 include_once('head.php');
 ?>
 <style>
@@ -241,7 +240,7 @@ include_once('head.php');
                                         </div>
                                         <form class="h-auto" method="GET" action="index.php?id=">
                                             <input type="hidden" name="id" value="<?= $prod['prod_id'] ?>">
-                                            <?php if ($prod['prod_quantidade'] > 0) { ?>
+                                            <?php if ($prod['prod_estoque'] > 0) { ?>
                                                 <a onclick="AddCarrinho(<?= $prod['prod_id'] ?>)"><button type="submit"
                                                         id="AddCarrinho"
                                                         class="btn btn-secondary-personalizado p-2 w-100 ">Adicionar ao

@@ -23,7 +23,7 @@ class Pagamento
                 $AuxControll = new ProdutoControll();
                 $produto = $AuxControll->ObterProdutoControll($item["prod_id"]);
             }
-            if ($produto['prod_quantidade'] > 0 || $item['qntd'] < $produto['prod_quantidade']) {
+            if ($produto['prod_estoque'] > 0 || $item['qntd'] < $produto['prod_estoque']) {
                 $itemsinCar[] = [
                     "id" => $item["prod_id"],
                     "title" => $produto['prod_nome'],
@@ -45,7 +45,7 @@ class Pagamento
                 "expires" => false,
                 "external_reference" => $User['usu_id'],
                 "items" => $itemsinCar,
-                "notification_url" => 'https://f1c2-177-124-64-94.ngrok-free.app/project/API/notificacao.php',
+                "notification_url" => 'https://42b8-177-124-64-94.ngrok-free.app/project/API/notificacao.php',
                 "payment_methods" => [
                     "excluded_payment_types" => [
                         [

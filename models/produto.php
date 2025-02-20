@@ -83,14 +83,14 @@ class ProdutoModel
     {
         $this->prod_imagem = $imagem;
     }
-    public function getCor()
-    {
-        return $this->prod_cor;
-    }
-    public function setCor(string $cor)
-    {
-        $this->prod_cor = $cor;
-    }
+    // public function getCor()
+    // {
+    //     return $this->prod_cor;
+    // }
+    // public function setCor(string $cor)
+    // {
+    //     $this->prod_cor = $cor;
+    // }
     public function getCatPai()
     {
         return $this->prod_catPai;
@@ -218,35 +218,37 @@ class ProdutoModel
             $db = new Database();
             $this->conn = $db->getConnection();
 
-            $sql = " SELECT prod_id,
-                        prod_nome,
-                        prod_descricao,
-                        prod_imagem,
-                        prod_categoria_pai,
-                        prod_categoria_filho,
-                        prod_marca,
-                        prod_tamanho,
-                        prod_estoque,
-                        prod_custo,
-                        prod_venda,
-                        prod_desconto,
-                        prod_avaliacao,
-                        prod_quantidadeVenda,
-                        prod_usu_cad,
-                        prod_dt_ini,
-                        prod_status,
-                        prod_dt_exc 
-                        usuario.usu_nome AS vendedor_nome
+            $sql = " SELECT 
+                        p.prod_id,
+                        p.prod_nome,
+                        p.prod_descricao,
+                        p.prod_imagem,
+                        cf.catFilho_nome,
+                        cp.catPai_nome,
+                        m.marc_nome,
+                        p.prod_tamanho,
+                        p.prod_estoque,
+                        p.prod_custo,
+                        p.prod_venda,
+                        p.prod_desconto,
+                        p.prod_avaliacao,
+                        p.prod_quantidadeVenda,
+                        u.usu_nome AS vendedor_nome,
+                        p.prod_dt_ini,
+                        p.prod_status,
+                        p.prod_dt_exc
                     FROM 
-                        produtos
+                        produtos p
                     INNER JOIN 
-                        usuario u ON produtos.prod_usu_cad = u.usu_id  
+                        usuario u ON p.prod_usu_cad = u.usu_id  
                     INNER JOIN
-                        Categoria_Pai cp ON prod_categoria_pai = cp.catPai_id,
-                        Categoria_Filho cf ON prod_categoria_filho = cf.catFilho_id,
-                        Marca m ON prod_marca = m.marc_id,
-                        WHERE prod_status = 1;
-                    ";
+                        Categoria_Pai cp ON p.prod_categoria_pai = cp.catPai_id
+                    INNER JOIN
+                        Categoria_Filho cf ON p.prod_categoria_filho = cf.catFilho_id
+                    INNER JOIN
+                        Marca m ON p.prod_marca = m.marc_id
+                    WHERE 
+                        p.prod_status = 1;";
 
             $stmt = $this->conn->query($sql);
             $stmt->execute();
@@ -273,7 +275,7 @@ class ProdutoModel
                         produtos.prod_descricao, 
                         produtos.prod_custo, 
                         produtos.prod_venda, 
-                        produtos.prod_quantidade,
+                        produtos.prod_estoque,
                         produtos.prod_desconto,
                         produtos.prod_imagem, 
                         produtos.prod_dt_ini, 
@@ -310,7 +312,7 @@ class ProdutoModel
                         prod_nome,
                         prod_descricao,
                         prod_imagem,
-                        prod_categoria_pai,
+                        cp.catPai_nome,
                         prod_categoria_filho,
                         prod_marca,
                         prod_tamanho,
@@ -323,17 +325,19 @@ class ProdutoModel
                         prod_usu_cad,
                         prod_dt_ini,
                         prod_status,
-                        prod_dt_exc 
-                        usuario.usu_nome AS vendedor_nome
+                        prod_dt_exc,
+                        u.usu_nome AS vendedor_nome
                     FROM 
                         produtos
                     INNER JOIN 
                         usuario u ON produtos.prod_usu_cad = u.usu_id  
                     INNER JOIN
-                        Categoria_Pai cp ON prod_categoria_pai = cp.catPai_id,
-                        Categoria_Filho cf ON prod_categoria_filho = cf.catFilho_id,
-                        Marca m ON prod_marca = m.marc_id,
-                        WHERE prod_status = 1;
+                        Categoria_Pai cp ON prod_categoria_pai = cp.catPai_id
+                    INNER JOIN
+                        Categoria_Filho cf ON prod_categoria_filho = cf.catFilho_id
+                    INNER JOIN
+                        Marca m ON prod_marca = m.marc_id
+                        WHERE prod_status = 1 ORDER BY prod_id OFFSET :pagina ROWS FETCH NEXT 8 ROWS ONLY;
                     ";
 
             $stmt = $this->conn->prepare($sql);
@@ -358,21 +362,32 @@ class ProdutoModel
 
 
             $sql = " SELECT prod_id,
-                        produtos.prod_nome, 
-                        Tipos_Produtos.tipo_prod_nome,
-                        produtos.prod_descricao, 
-                        produtos.prod_custo, 
-                        produtos.prod_venda, 
-                        produtos.prod_desconto, 
-                        produtos.prod_imagem, 
-                        produtos.prod_dt_ini, 
+                        prod_nome,
+                        prod_descricao,
+                        prod_imagem,
+                        prod_categoria_pai,
+                        prod_categoria_filho,
+                        prod_marca,
+                        prod_tamanho,
+                        prod_estoque,
+                        prod_custo,
+                        prod_venda,
+                        prod_desconto,
+                        prod_avaliacao,
+                        prod_quantidadeVenda,
+                        prod_usu_cad,
+                        prod_dt_ini,
+                        prod_status,
+                        prod_dt_exc 
                         usuario.usu_nome AS vendedor_nome
                     FROM 
                         produtos
                     INNER JOIN 
-                        Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod  
-                    INNER JOIN 
-                        usuario ON produtos.prod_usu_cad = usuario.usu_id
+                        usuario u ON produtos.prod_usu_cad = u.usu_id  
+                    INNER JOIN
+                        Categoria_Pai cp ON prod_categoria_pai = cp.catPai_id,
+                        Categoria_Filho cf ON prod_categoria_filho = cf.catFilho_id,
+                        Marca m ON prod_marca = m.marc_id,
                         WHERE prod_usu_cad = :id AND prod_status = 1 ORDER BY prod_id OFFSET 15 ROWS FETCH NEXT 5 ROWS ONLY;
                     ";
             $stmt = $this->conn->prepare($sql);
@@ -391,10 +406,38 @@ class ProdutoModel
             $db = new Database();
             $this->conn = $db->getConnection();
 
-            $sql = ' SELECT prod_id, produtos.prod_nome, produtos.prod_tipo, produtos.prod_descricao, produtos.prod_custo, produtos.prod_venda, produtos.prod_desconto, produtos.prod_quantidade, produtos.prod_imagem FROM produtos
-                        INNER JOIN Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod  
-                        INNER JOIN usuario ON produtos.prod_usu_cad = usuario.usu_id
-                        WHERE produtos.prod_id = :id AND prod_status = 1;
+            $sql = 'SELECT 
+                        p.prod_id,
+                        p.prod_nome,
+                        p.prod_descricao,
+                        p.prod_imagem,
+                        p.prod_categoria_pai,
+                        p.prod_categoria_filho,
+                        cf.catFilho_nome,
+                        cp.catPai_nome,
+                        m.marc_nome,
+                        p.prod_tamanho,
+                        p.prod_estoque,
+                        p.prod_custo,
+                        p.prod_venda,
+                        p.prod_desconto,
+                        p.prod_avaliacao,
+                        p.prod_quantidadeVenda,
+                        u.usu_nome AS vendedor_nome,
+                        p.prod_dt_ini,
+                        p.prod_status,
+                        p.prod_dt_exc
+                    FROM 
+                        produtos p
+                    INNER JOIN 
+                        usuario u ON p.prod_usu_cad = u.usu_id  
+                    INNER JOIN
+                        Categoria_Pai cp ON p.prod_categoria_pai = cp.catPai_id
+                    INNER JOIN
+                        Categoria_Filho cf ON p.prod_categoria_filho = cf.catFilho_id
+                    INNER JOIN
+                        Marca m ON p.prod_marca = m.marc_id
+                    WHERE p.prod_id = :id AND prod_status = 1;
                     ';
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([$id]);
@@ -456,7 +499,7 @@ class ProdutoModel
                     ) VALUES (
                         :Nome,
                         :Descricao,
-                        'null.png',
+                        :Imagem,
                         :Categoria_pai,
                         :Categoria_filho,
                         :Marca,
@@ -475,7 +518,7 @@ class ProdutoModel
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(":Nome", $dados->getNome(), PDO::PARAM_STR);
             $stmt->bindValue(":Descricao", $dados->getDescricao(), PDO::PARAM_STR);
-            // $stmt->bindValue(":Imagem", $dados->getImagem(), PDO::PARAM_STR);
+            $stmt->bindValue(":Imagem", $dados->getImagem(), PDO::PARAM_STR);
             $stmt->bindValue(":Categoria_pai", $dados->getCatPai(), PDO::PARAM_STR);
             $stmt->bindValue(":Categoria_filho", $dados->getCatFilho(), PDO::PARAM_STR);
             $stmt->bindValue(":Marca", $dados->getMarca(), PDO::PARAM_STR);
@@ -494,10 +537,6 @@ class ProdutoModel
 
             $stmt->closeCursor();
         } catch (Exception $e) {
-            echo "<pre>";
-            var_dump($e);
-            echo "</pre>";
-            exit();
             return $e->getMessage();
         }
     }
@@ -508,22 +547,31 @@ class ProdutoModel
             $this->conn = $db->getConnection();
 
 
-            $sql = "UPDATE produtos SET	prod_nome = :nome, prod_tipo = :prod_tipo, prod_custo = :preco_custo, prod_venda = :preco_venda, prod_descricao = :descricao, prod_desconto = :desconto, prod_quantidade = :quantidade, prod_imagem = :imagem, prod_usu_cad = :id_vendedor, prod_dt_ini = GETDATE() WHERE prod_id = $idProd";
+            $sql = "UPDATE produtos SET	prod_nome = :nome, prod_tipo = :prod_tipo, prod_custo = :preco_custo, prod_venda = :preco_venda, prod_descricao = :descricao, prod_desconto = :desconto, prod_estoque = :quantidade, prod_imagem = :imagem, prod_usu_cad = :id_vendedor, prod_dt_ini = GETDATE() WHERE prod_id = $idProd";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(":nome", $dados->getNome(), PDO::PARAM_STR);
-            $stmt->bindValue(":prod_tipo", $dados->getTipoProd(), PDO::PARAM_STR);
-            $stmt->bindValue(":preco_custo", $dados->getPrecoCusto(), PDO::PARAM_STR);
-            $stmt->bindValue(":preco_venda", $dados->getPrecoVenda(), PDO::PARAM_STR);
-            $stmt->bindValue(":descricao", $dados->getDescricao(), PDO::PARAM_STR);
-            $stmt->bindValue(":desconto", $dados->getDesconto(), PDO::PARAM_STR);
-            $stmt->bindValue(":quantidade", $dados->getQuantidade(), PDO::PARAM_STR);
+
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(":Nome", $dados->getNome(), PDO::PARAM_STR);
+            $stmt->bindValue(":Descricao", $dados->getDescricao(), PDO::PARAM_STR);
+            // $stmt->bindValue(":Imagem", $dados->getImagem(), PDO::PARAM_STR);
+            $stmt->bindValue(":Categoria_pai", $dados->getCatPai(), PDO::PARAM_STR);
+            $stmt->bindValue(":Categoria_filho", $dados->getCatFilho(), PDO::PARAM_STR);
+            $stmt->bindValue(":Marca", $dados->getMarca(), PDO::PARAM_STR);
+            // $stmt->bindValue(":Tamanho", $dados->getNome(), PDO::PARAM_STR);
+            $stmt->bindValue(":Estoque", $dados->getEstoque(), PDO::PARAM_STR);
+            $stmt->bindValue(":Custo", $dados->getCusto(), PDO::PARAM_STR);
+            $stmt->bindValue(":Venda", $dados->getVenda(), PDO::PARAM_STR);
+            $stmt->bindValue(":Desconto", $dados->getDesconto(), PDO::PARAM_STR);
+            // $stmt->bindValue(":Avaliacao", $dados->getAvaliacao(), PDO::PARAM_STR);
+            // $stmt->bindValue(":Quantidade_venda", $dados->getQuantidadeVenda(), PDO::PARAM_STR);
+            $stmt->bindValue(":Usuario_cad", $dados->getProdUsuario(), PDO::PARAM_STR);
             if ($dados->getImagem() != null) {
                 $stmt->bindValue(":imagem", $dados->getImagem(), PDO::PARAM_STR);
             } else {
                 $produto = $this->ObterProduto($idProd);
                 $stmt->bindValue(":imagem", $produto['prod_imagem'], PDO::PARAM_STR);
             }
-            $stmt->bindValue(":id_vendedor", $idUsu, PDO::PARAM_STR);
             $stmt->execute();
             $stmt->closeCursor();
         } catch (PDOException $e) {
@@ -552,8 +600,8 @@ class ProdutoModel
             $db = new Database();
             $this->conn = $db->getConnection();
 
-            $sql = 'SELECT prod_nome, prod_quantidade, 
-                    (CASE WHEN prod_quantidade > :qtde
+            $sql = 'SELECT prod_nome, prod_estoque, 
+                    (CASE WHEN prod_estoque > :qtde
                     THEN 1 ELSE 0 END) 
                     AS STATUS_PROD FROM produtos WHERE prod_id = :id;';
             $stmt = $this->conn->prepare($sql);
@@ -575,8 +623,8 @@ class ProdutoModel
             $db = new Database();
             $this->conn = $db->getConnection();
 
-            $sql = 'UPDATE produtos set prod_quantidade = :qntdeAlterar where prod_id = :id;';
-            $stmt = $this->conn->prepare($sql);
+            $sql = 'UPDATE produtos set prod_estoque = :qntdeAlterar where prod_id = :id;';
+            $stmt = $this->conn->prepare( $sql);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->bindValue(':qntdeAlterar', $qntde, PDO::PARAM_INT);
             $stmt->execute();
@@ -591,20 +639,35 @@ class ProdutoModel
         $this->conn = $db->getConnection();
         try {
 
-            $sql = "SELECT prod_id, 
-                    produtos.prod_nome, 
-                    Tipos_Produtos.tipo_prod_nome, 
-                    produtos.prod_descricao, 
-                    produtos.prod_custo, 
-                    produtos.prod_venda, 
-                    produtos.prod_quantidade, 
-                    produtos.prod_desconto, 
-                    produtos.prod_imagem, 
-                    produtos.prod_dt_ini, 
-                    usuario.usu_nome AS vendedor_nome
-                    FROM produtos
-                    INNER JOIN Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod  
-                    INNER JOIN usuario ON produtos.prod_usu_cad = usuario.usu_id
+            $sql = " SELECT 
+                        p.prod_id,
+                        p.prod_nome,
+                        p.prod_descricao,
+                        p.prod_imagem,
+                        cf.catFilho_nome,
+                        cp.catPai_nome,
+                        m.marc_nome,
+                        p.prod_tamanho,
+                        p.prod_estoque,
+                        p.prod_custo,
+                        p.prod_venda,
+                        p.prod_desconto,
+                        p.prod_avaliacao,
+                        p.prod_quantidadeVenda,
+                        u.usu_nome AS vendedor_nome,
+                        p.prod_dt_ini,
+                        p.prod_status,
+                        p.prod_dt_exc
+                    FROM 
+                        produtos p
+                    INNER JOIN 
+                        usuario u ON p.prod_usu_cad = u.usu_id  
+                    INNER JOIN
+                        Categoria_Pai cp ON p.prod_categoria_pai = cp.catPai_id
+                    INNER JOIN
+                        Categoria_Filho cf ON p.prod_categoria_filho = cf.catFilho_id
+                    INNER JOIN
+                        Marca m ON p.prod_marca = m.marc_id
                     WHERE produtos.prod_nome LIKE :produto";
 
             $stmt = $this->conn->prepare($sql);
