@@ -678,26 +678,37 @@ class ProdutoModel
             $db = new Database();
             $this->conn = $db->getConnection();
 
-
-            $sql = "UPDATE produtos SET	prod_nome = :nome, prod_tipo = :prod_tipo, prod_custo = :preco_custo, prod_venda = :preco_venda, prod_descricao = :descricao, prod_desconto = :desconto, prod_estoque = :quantidade, prod_imagem = :imagem, prod_usu_cad = :id_vendedor, prod_dt_ini = GETDATE() WHERE prod_id = $idProd";
+            $sql = "UPDATE produtos SET	
+            prod_nome = :nome, 
+            prod_custo = :preco_custo, 
+            prod_venda = :preco_venda, 
+            prod_descricao = :descricao, 
+            prod_desconto = :desconto, 
+            prod_categoria_pai = :Categoria_pai, 
+            prod_categoria_filho = :Categoria_filho, 
+            prod_marca = :marca, 
+            prod_estoque = :Estoque, 
+            prod_imagem = :imagem, 
+            prod_usu_cad = :id_vendedor, 
+            prod_dt_ini = GETDATE() WHERE prod_id = $idProd";
             $stmt = $this->conn->prepare($sql);
 
-
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(":Nome", $dados->getNome(), PDO::PARAM_STR);
-            $stmt->bindValue(":Descricao", $dados->getDescricao(), PDO::PARAM_STR);
-            // $stmt->bindValue(":Imagem", $dados->getImagem(), PDO::PARAM_STR);
+            var_dump($dados->getNome());
+            $stmt->bindValue(":nome", $dados->getNome(), PDO::PARAM_STR);
+            $stmt->bindValue(":descricao", $dados->getDescricao(), PDO::PARAM_STR);
             $stmt->bindValue(":Categoria_pai", $dados->getCatPai(), PDO::PARAM_STR);
             $stmt->bindValue(":Categoria_filho", $dados->getCatFilho(), PDO::PARAM_STR);
-            $stmt->bindValue(":Marca", $dados->getMarca(), PDO::PARAM_STR);
-            // $stmt->bindValue(":Tamanho", $dados->getNome(), PDO::PARAM_STR);
+            $stmt->bindValue(":marca", $dados->getMarca(), PDO::PARAM_STR);
             $stmt->bindValue(":Estoque", $dados->getEstoque(), PDO::PARAM_STR);
-            $stmt->bindValue(":Custo", $dados->getCusto(), PDO::PARAM_STR);
-            $stmt->bindValue(":Venda", $dados->getVenda(), PDO::PARAM_STR);
-            $stmt->bindValue(":Desconto", $dados->getDesconto(), PDO::PARAM_STR);
+            $stmt->bindValue(":preco_custo", $dados->getCusto(), PDO::PARAM_STR);
+            $stmt->bindValue(":preco_venda", $dados->getVenda(), PDO::PARAM_STR);
+            $stmt->bindValue(":desconto", $dados->getDesconto(), PDO::PARAM_STR);
+            $stmt->bindValue(":id_vendedor", $dados->getProdUsuario(), PDO::PARAM_STR);
             // $stmt->bindValue(":Avaliacao", $dados->getAvaliacao(), PDO::PARAM_STR);
             // $stmt->bindValue(":Quantidade_venda", $dados->getQuantidadeVenda(), PDO::PARAM_STR);
-            $stmt->bindValue(":Usuario_cad", $dados->getProdUsuario(), PDO::PARAM_STR);
+            // $stmt->bindValue(":Tamanho", $dados->getNome(), PDO::PARAM_STR);
+            // $stmt->bindValue(":Imagem", $dados->getImagem(), PDO::PARAM_STR);
+            
             if ($dados->getImagem() != null) {
                 $stmt->bindValue(":imagem", $dados->getImagem(), PDO::PARAM_STR);
             } else {
@@ -707,6 +718,7 @@ class ProdutoModel
             $stmt->execute();
             $stmt->closeCursor();
         } catch (PDOException $e) {
+            var_dump($e->getMessage());exit();
             return $e->getMessage();
         }
     }

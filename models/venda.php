@@ -102,6 +102,87 @@ class VendaModel
             echo $e->getMessage();
         }
     }
+    public function FiltragemVenda($CodVenda, $NomeCliente, $ordPor, $catPai ,$catFilho)
+    {
+        try {
+
+
+            $db = new Database();
+            $this->conn = $db->getConnection();
+
+            $sql = 'SELECT 
+            prod_imagem, prod_nome, ven_quantidade, usu_nome, ven_valor, ven_dt, cod_venda
+            FROM venda
+            INNER JOIN produtos ON venda.ven_prod_id = produtos.prod_id 
+            INNER JOIN Categoria_Pai cp ON produtos.prod_categoria_pai = cp.catPai_id
+            INNER JOIN Categoria_Filho cf ON produtos.prod_categoria_filho = cf.catFilho_id
+            INNER JOIN usuario ON venda.ven_usu_id = usuario.usu_id WHERE prod_nome IS NOT NULL';
+
+            if($CodVenda != null || $NomeCliente != "" || $ordPor != "" || $catPai != null || $catFilho != null){
+                // $sql .= " WHERE ";
+                if ($CodVenda != "") {
+                    $sql .= " AND venda.cod_venda LIKE :codVenda";
+                }
+                if($NomeCliente != ""){
+                    $sql .= " AND usuario.usu_nome LIKE :cliente";
+                }
+                if($catPai != null){
+                    $sql .= " AND cp.catPai_id = :cat_pai";
+                }
+                if($catFilho != null){
+                    $sql .= " AND cf.catFilho_id = :cat_filho";
+                }
+                if ($ordPor != 0) {
+                    switch ($ordPor) {
+                        case 1:
+                            $sql .= " ORDER BY venda.ven_valor ASC";
+                            break;
+                        case 2:
+                            $sql .= " ORDER BY venda.ven_valor DESC";
+                            break;
+                        case 3:
+                            $sql .= " ORDER BY usuario.usu_nome ASC";
+                            break;
+                        case 4:
+                            $sql .= " ORDER BY usuario.usu_nome DESC";
+                            break;
+                        case 5:
+                            $sql .= " ORDER BY venda.ven_dt ASC";
+                            break;
+                        case 6:
+                            $sql .= " ORDER BY venda.ven_dt DESC";
+                            break;
+                    }
+                }
+
+                $stmt = $this->conn->prepare($sql);
+                if ($CodVenda != "") {
+                    $stmt->bindValue(":codVenda", '%' . $CodVenda . '%', PDO::PARAM_STR);
+                }
+                if ($NomeCliente != "") {
+                    $stmt->bindValue(":cliente", '%' . $NomeCliente . '%', PDO::PARAM_STR);
+                }
+                if($catPai != null){
+                    $stmt->bindValue(":cat_pai", $catPai, PDO::PARAM_STR);
+                }
+                if($catFilho != null){
+                    $stmt->bindValue(":cat_filho", $catFilho, PDO::PARAM_STR);
+                }
+                
+                $stmt->execute();
+            } else {
+                $stmt = $this->conn->query($sql);
+            }
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // print_r($result);
+            $stmt->closeCursor();
+            
+            return $result;
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+        }
+    }
     public function ObterAllVenda()
     {
         try {

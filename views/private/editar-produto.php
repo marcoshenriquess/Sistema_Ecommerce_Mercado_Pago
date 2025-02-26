@@ -24,27 +24,28 @@ $CategoriaFilho = $AuxControllFilho->ListaCategorias($prod['prod_categoria_pai']
 if (isset($_POST['editar'])) {
     $produtos = new ProdutoModel(
         null,
+        $_POST['nome'],
+        $_POST['descricao'],
+        null,
+        $_POST['catPai'],
+        $_POST['catFilho'],
+        $_POST['marca'],
+        null ,
+        $_POST['estoque'],
+        $_POST['preco_custo'],
+        $_POST['preco_venda'],
+        $_POST['desconto'],
+        null,
+        0,
+        $_SESSION['usuario_logado']['usu_id'],
         null,
         null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
     );
     if (isset($_FILES['image'])) {
         $produtos->setimagem($_FILES['image']['name']);
         move_uploaded_file($_FILES['image']['tmp_name'], $produtos->getImagemDiretorio());
+        // var_dump($produtos->getImagemDiretorio());
+        // var_dump(__DIR__ . "/" . $_FILES['image']['name']);
     }
     $produtoDAO = new ProdutoControll();
     $produtoDAO->AlterarProdutoControll($produtos,$_SESSION['usuario_logado']['usu_id'], $_GET['id']);

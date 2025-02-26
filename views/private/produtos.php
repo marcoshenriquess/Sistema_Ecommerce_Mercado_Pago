@@ -122,6 +122,7 @@ $TotalPags = $MaxPag / 8;
                     </div>
                 </form>
             </fieldset>
+            <p>Total de vendas: <?=count($List) ?></p>
             <table class="table table-borderless shadow border-radius p-5 align-middle">
                 <thead class="border-radius fundo_thead">
                     <tr class="fundo_thead">

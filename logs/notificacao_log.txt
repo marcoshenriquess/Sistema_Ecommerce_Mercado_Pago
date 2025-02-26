@@ -3074,4 +3074,44 @@
 }{
     "resource": "https:\/\/api.mercadolibre.com\/merchant_orders\/28672597480",
     "topic": "merchant_order"
+}{
+    "resource": "https:\/\/api.mercadolibre.com\/merchant_orders\/28861761955",
+    "topic": "merchant_order"
+}{
+    "resource": "103107508513",
+    "topic": "payment"
+}{
+    "action": "payment.created",
+    "api_version": "v1",
+    "data": {
+        "id": "103107508513"
+    },
+    "date_created": "2025-02-26T14:25:11Z",
+    "id": 119390951141,
+    "live_mode": true,
+    "type": "payment",
+    "user_id": "2113437052"
+}{
+    "resource": "https:\/\/api.mercadolibre.com\/merchant_orders\/28861761955",
+    "topic": "merchant_order"
+}{
+    "resource": "https:\/\/api.mercadolibre.com\/merchant_orders\/28871157557",
+    "topic": "merchant_order"
+}{
+    "action": "payment.created",
+    "api_version": "v1",
+    "data": {
+        "id": "103530525212"
+    },
+    "date_created": "2025-02-26T18:45:40Z",
+    "id": 119456251736,
+    "live_mode": true,
+    "type": "payment",
+    "user_id": "2113437052"
+}{
+    "resource": "103530525212",
+    "topic": "payment"
+}{
+    "resource": "https:\/\/api.mercadolibre.com\/merchant_orders\/28871157557",
+    "topic": "merchant_order"
 }

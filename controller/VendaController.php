@@ -12,6 +12,12 @@ class VendaController{
         
         return $result;
     }
+    public function FiltragemVenda($CodVenda, $NomeCliente, $ordPor, $catPai ,$catFilho){
+        $AuxControll = new VendaModel();
+        $result = $AuxControll->FiltragemVenda($CodVenda, $NomeCliente, $ordPor, $catPai ,$catFilho);
+        
+        return $result;
+    }
     public function ObterAllVenda(){
         $AuxControll = new VendaModel();
         $result = $AuxControll->ObterAllVenda();

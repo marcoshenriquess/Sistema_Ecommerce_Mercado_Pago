@@ -7,21 +7,52 @@ Verificar_Permissão_Pag();
 
 
 require_once("C:/xampp/htdocs/project/controller/VendaController.php");
-$UsuarioCont = new VendaController();
-$List = $UsuarioCont->ObterAllVenda();
+require_once("../../controller/CategoriaPaiController.php");
+
+$AuxControllPai = new CategoriaPaiController();
+$VendaControll = new VendaController();
+
+$CodVenda = null;
+$NomeCliente = "";
+$ordPor = 0;
+$catPai = null;
+$catFilho = null;
+
+
+$CategoriaPai = $AuxControllPai->ListaCategorias();
+
+if (isset($_POST['buscar'])) {
+    if (isset($_POST['codVenda']) ){
+        $CodVenda = $_POST['codVenda'];
+    }
+    if (isset($_POST['NomeCliente']) ){
+        $NomeCliente = $_POST['NomeCliente'];
+    }
+    if (isset($_POST['ordPor'])){
+        $ordPor = $_POST['ordPor'];
+    }
+    if (isset($_POST['catPai'])){
+        $catPai = $_POST['catPai'];
+    }
+    if (isset($_POST['catFilho'])){
+        $catFilho = $_POST['catFilho'];
+    }
+    $List = $VendaControll->FiltragemVenda($CodVenda, $NomeCliente, $ordPor, $catPai , $catFilho);
+} else {
+    $List = $VendaControll->ObterAllVenda();
+}
 
 
 
 $MaxPag = count($List);
 $TotalPags = $MaxPag / 8;
-
 if (isset($_GET['pagina'])) {
     $pagina = filter_input(INPUT_GET, "pagina", FILTER_VALIDATE_INT);
 } else {
     $pagina = 0;
 }
 
-$List = $UsuarioCont->ObterPagVenda($pagina);
+// $List = $VendaControll->ObterPagVenda($pagina);
 
 ?>
 
@@ -53,6 +84,47 @@ $List = $UsuarioCont->ObterPagVenda($pagina);
                             class="fas fa-download fa-sm text-white-50"></i> Relatório de Vendas</a>
                 </div>
             </div>
+            <fieldset class="w-100 d-flex mb-3">
+                <legend>Vendas</legend>
+                <form class="w-100 d-flex justify-content-start align-itens-center" method="POST">
+                    <div class="input-group d-flex d-flex justify-content-md-center align-itens-center">
+                        <input type="number" id="codVenda" name="codVenda" class="form-control shadow-sm rounded" placeholder="Pesquisar pelo código"
+                            aria-label="Search" aria-describedby="basic-addon2" style="height: 38px;">
+                    </div>
+                    <div class="input-group d-flex d-flex justify-content-md-center align-itens-center ml-3">
+                        <input type="text" id="NomeCliente" name="NomeCliente" class="form-control shadow-sm rounded" placeholder="Pesquisar pelo cliente"
+                            aria-label="Search" aria-describedby="basic-addon2" style="height: 38px;">
+                    </div>
+                    <div class="input-group d-flex ml-3 d-flex justify-content-md-center align-itens-center">
+                        <select id="ordPor" name="ordPor" class="form-control shadow-sm" aria-label=".form-control-sm example">
+                            <option disabled selected>Ordenar por...</option>
+                            <option value="1">Valor Crescente</option>
+                            <option value="2">Valor Decrescente</option>
+                            <option value="3">Cliente de A-Z</option>
+                            <option value="4">Cliente de Z-A</option>
+                            <option value="5">Data Crescente</option>
+                            <option value="6">Data Decrescente</option>
+                        </select>
+                    </div>
+                    <div class="input-group d-flex ml-3 d-flex justify-content-md-center align-itens-center">
+                        <select id="catPai" name="catPai" class="form-control shadow-sm" id="CategoriaPai" onchange="javascript:mostraCatFilho(this)" required>
+                            <option selected disabled>Filtrar por categoria Pai</option>
+                            <?php foreach ($CategoriaPai as $tipo): ?>
+                                <option value="<?= $tipo['catPai_id'] ?>"><?= $tipo['catPai_nome'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="input-group d-flex ml-3 d-flex justify-content-md-center align-itens-center">
+                        <select id="catFilho" name="catFilho" class="form-control shadow-sm" id="CategoriaFilho" required disabled>
+                            <option selected disabled>Filtrar por categoria Filho</option>
+                        </select>
+                    </div>
+                    <div class="input-group w-25 d-flex ml-3 d-flex justify-content-md-center align-itens-center">
+                        <button name="buscar" type="submit" class="btn btn-primary">Buscar</button>
+                    </div>
+                </form>
+            </fieldset>
+            <p>Total de vendas: <?=count($List) ?></p>
             <?php if ($List) { ?>
                 <table class="table table-hover shadow border-radius p-5 align-middle border-top-none">
                     <thead class="border-radius fundo_thead">
@@ -81,13 +153,15 @@ $List = $UsuarioCont->ObterPagVenda($pagina);
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-            <?php } else { echo "<div class='w-100 d-flex justify-content-md-center align-itens-center'><p>Nenhuma Venda Feita</p></div> "; } ?>
+            <?php } else {
+                echo "<div class='w-100 d-flex justify-content-md-center align-itens-center'><p>Nenhuma Venda Feita</p></div> ";
+            } ?>
 
             <div class="d-flex justify-content-md-center align-items-center mt-2 p-4">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-end">
                         <?php if ($pagina > 0) { ?>
-                            <li class="page-item"><a class="page-link" href="?pagina=<?= $pagina - 1 ?>">Voltar</a></li>
+                            <li class="page-item"><a class="page-link text-white bg-primary" href="?pagina=<?= $pagina - 1 ?>">Voltar</a></li>
                         <?php } else { ?>
                             <li class="page-item disabled"><a class="page-link" href="?pagina=<?= $pagina - 1 ?>">Voltar</a></li>
                         <?php } ?>
@@ -97,7 +171,7 @@ $List = $UsuarioCont->ObterPagVenda($pagina);
                         </li>
 
                         <?php if ($pagina + 1 < $TotalPags) { ?>
-                            <li class="page-item"><a class="page-link" href="?pagina=<?= $pagina + 1 ?>">Proximo</a></li>
+                            <li class="page-item"><a class="page-link text-white bg-primary" href="?pagina=<?= $pagina + 1 ?>">Proximo</a></li>
                         <?php } else { ?>
                             <li class="page-item disabled"><a class="page-link" href="?pagina=<?= $pagina + 1 ?>">Proximo</a></li>
                         <?php } ?>
