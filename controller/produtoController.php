@@ -12,6 +12,12 @@ class ProdutoControll
         $Produtos = $AuxProduto->ListaProduto($pag);
         return $Produtos;
     }
+    public function ProdutosFiltrados($nomeProd, $ordPor, $catPai, $catFilho)
+    {
+        $AuxProduto = new ProdutoModel();
+        $Produtos = $AuxProduto->ProdutosFiltrados($nomeProd, $ordPor, $catPai, $catFilho);
+        return $Produtos;
+    }
     public function ListaAllProduto()
     {
         $AuxProduto = new ProdutoModel();

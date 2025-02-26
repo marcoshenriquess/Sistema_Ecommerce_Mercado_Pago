@@ -36,8 +36,9 @@ if (isset($_GET["id"])) { // O $_GET['ID'] PEGA O ID DO PRODUTO QUE ESTÁ SENDO 
 }
 
 // LISTANDO OS PRODUTOS EXISTENTES ARMAZENADO
+$aux = "";
 $AuxListProd = new ProdutoControll();
-$ListProd = $AuxListProd->ListaAllProduto();
+$ListProd = $AuxListProd->ListaAllProduto($aux);
 include_once('head.php');
 ?>
 <style>
@@ -185,8 +186,11 @@ include_once('head.php');
                     </div>
                 </div>
                 <!--CONTEUDO -->
-                <main class="w-100 mt-5">
-                    <article class="row justify-content-md-center p-3 w-100">
+                <main class="w-100 mt-5 border d-flex justify-content-md-center ">
+                    <!-- <aside class="border w-25 ">
+
+                    </aside> -->
+                    <article class="row justify-content-md-center p-3 w-75">
                         <?php foreach ($ListProd as $prod): ?>
                             <!-- Loop para listar todos os produtos -->
                             <div class="card m-1 rounded ajuste-card-item ajuste-flex-boxs">

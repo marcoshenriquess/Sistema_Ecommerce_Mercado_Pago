@@ -16,11 +16,11 @@ if(($Dados) and ($Dados->rowCount() != 0)){
     
     fwrite($resultado, "\xEF\xBB\xBF");
 
-    $cabecalho = ['ID', 'Nome', 'Tipo', 'Descricao', 'Custo', 'Venda', 'Estoque', 'Desconto', 'Imagem', 'dt_ini', 'Usu'];
+    $cabecalho = ['ID', 'Nome', 'Descricao', 'Imagem', 'Categoria Pai','Categoria Filho', 'Marca','tamanho', 'estoque','custo', 'venda','desconto','avaliacao','quantidade de Venda','Vendedor', 'data cadastro', 'status', 'data exclusão'];
     fputcsv($resultado, $cabecalho, ';');
 
-    
-    $Produtos = $AuxProdControll->ListaAllProduto();
+    $aux = "";
+    $Produtos = $AuxProdControll->ListaAllProduto($aux);
     foreach($Produtos as $key => $element){
         extract($element);
         fputcsv($resultado, $element, ';');

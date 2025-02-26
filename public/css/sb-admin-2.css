@@ -12906,3 +12906,19 @@ body.sidebar-toggled footer.sticky-footer {
 .checkbox-custom input:checked{
   border: transparent !important;
 }
+
+/* .input-border-down{
+  border: none !important;
+  border-radius: 0px !important;
+  border-bottom: 1px solid #d1d3e2 !important;
+  background-color: transparent !important;
+}
+
+ .input-border-down:focus{
+  outline: none !important;
+    box-shadow: none !important;
+    border-color: inherit !important;
+} */
+/* .input-border-down:hover{
+  border: none !important;
+} */ 

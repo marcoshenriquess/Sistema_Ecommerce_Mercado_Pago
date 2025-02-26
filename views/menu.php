@@ -16,8 +16,9 @@ require_once('../controller/logoutController.php');
 require_once('../controller/produtoController.php');
 
 // LISTANDO OS PRODUTOS EXISTENTES ARMAZENADO
+$aux = "";
 $AuxListProd = new ProdutoControll();
-$ListProd = $AuxListProd->ListaAllProduto();
+$ListProd = $AuxListProd->ListaAllProduto($aux);
 
 if (isset($_SESSION['usuario_logado'])) {
     $AuxTipoUser = new TipoUserControll();
@@ -239,6 +240,16 @@ if (isset($_SESSION['usuario_logado'])) {
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                             aria-labelledby="userDropdown">
+                            <?php 
+                                if($_SESSION['usuario_logado']['usu_tipo'] == 1){
+                            ?>
+                            
+                            <a class="dropdown-item" href="<?= dirname(__DIR__) ?>/views/private/index.php">
+                                <i class="fas fa-user-tie fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Área Administrativa
+                            </a>
+                            <hr />
+                            <?php } ?>
                             <a class="dropdown-item" href="meus_dados.php">
                                 <i class="fas fa-address-card fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Meus Dados

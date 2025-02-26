@@ -3,26 +3,52 @@
 include_once("../../models/permissao.php");
 
 require_once("C:/xampp/htdocs/project/controller/produtoController.php");
+require_once("../../controller/CategoriaPaiController.php");
 
-$ProdutosCont = new ProdutoControll();
-$Prods_get = $ProdutosCont->ListaAllProduto();
+$AuxControllPai = new CategoriaPaiController();
+$CategoriaPai = $AuxControllPai->ListaCategorias();
 
+$nomeProd = "";
+$ordPor = 0;
+$catPai = null;
+$catFilho = null;
+
+if (isset($_GET['pagina'])) {
+    $pagina = filter_input(INPUT_GET, "pagina", FILTER_VALIDATE_INT);
+} else {
+    $pagina = 0;
+}
+// print_r($List);
+if (isset($_GET['pagina'])) {
+    $pagina = filter_input(INPUT_GET, "pagina", FILTER_VALIDATE_INT);
+} else {
+    $pagina = 0;
+}
+
+if (isset($_POST['buscar'])) {
+    if (isset($_POST['produtosId'])) {
+        $nomeProd = $_POST['produtosId'];
+    }
+    if (isset($_POST['catPai'])) {
+        $catPai = $_POST['catPai'];
+    }
+    if (isset($_POST['catFilho'])) {
+        $catFilho = $_POST['catFilho'];
+    }
+    if (isset($_POST['ordPor'])) {
+        $ordPor = $_POST['ordPor'];
+    }
+
+    $ProdutosCont = new ProdutoControll();
+    $Prods_get = $ProdutosCont->ProdutosFiltrados($nomeProd, $ordPor, $catPai, $catFilho);
+    $List = $Prods_get;
+} else {
+    $ProdutosCont = new ProdutoControll();
+    $Prods_get = $ProdutosCont->ListaAllProduto();
+    $List = $ProdutosCont->ListaProdutoControll($pagina);
+}
 $MaxPag = count($Prods_get);
 $TotalPags = $MaxPag / 8;
-
-if (isset($_GET['pagina'])) {
-    $pagina = filter_input(INPUT_GET, "pagina", FILTER_VALIDATE_INT);
-} else {
-    $pagina = 0;
-}
-$ProdutosCont = new ProdutoControll();
-$List = $ProdutosCont->ListaProdutoControll($pagina);
-
-if (isset($_GET['pagina'])) {
-    $pagina = filter_input(INPUT_GET, "pagina", FILTER_VALIDATE_INT);
-} else {
-    $pagina = 0;
-}
 
 
 ?>
@@ -56,6 +82,46 @@ if (isset($_GET['pagina'])) {
                             class="fas fa-download fa-sm text-white-50"></i> Relatório de Produtos</a>
                 </div>
             </div>
+            <fieldset class="w-100 d-flex mb-3">
+                <legend>Produtos</legend>
+                <form class="w-100 d-flex justify-content-start align-itens-center" method="POST">
+                    <div class="input-group d-flex d-flex justify-content-md-center align-itens-center">
+                        <input type="text" id="produtosId" name="produtosId" class="form-control shadow-sm rounded" placeholder="Pesquisar pelo nome"
+                            aria-label="Search" aria-describedby="basic-addon2" style="height: 38px;">
+
+                        <ul id="produtoList" class="produtoList list-group mt-5" style="display: none; position: absolute; z-index: 1000; width: 100%; height: auto; max-height: 500px;">
+                            <!-- A lista de pastas será preenchida aqui -->
+                        </ul>
+                    </div>
+                    <div class="input-group d-flex ml-3 d-flex justify-content-md-center align-itens-center">
+                        <select id="ordPor" name="ordPor" class="form-control shadow-sm" aria-label=".form-control-sm example">
+                            <option disabled selected>Ordenar por...</option>
+                            <option value="1">Preço Crescente</option>
+                            <option value="2">Preço Decrescente</option>
+                            <option value="3">de A-Z</option>
+                            <option value="4">de Z-A</option>
+                            <option value="5">Estoque Crescente</option>
+                            <option value="6">Estoque Decrescente</option>
+                        </select>
+                    </div>
+                    <div class="input-group d-flex ml-3 d-flex justify-content-md-center align-itens-center">
+                        <select id="catPai" name="catPai" class="form-control shadow-sm" id="CategoriaPai" onchange="javascript:mostraCatFilho(this)" required>
+                            <option selected disabled>Filtrar por categoria Pai</option>
+                            <?php foreach ($CategoriaPai as $tipo): ?>
+                                <option value="<?= $tipo['catPai_id'] ?>"><?= $tipo['catPai_nome'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="input-group d-flex ml-3 d-flex justify-content-md-center align-itens-center">
+                        <select id="catFilho" name="catFilho" class="form-control shadow-sm" id="CategoriaFilho" required disabled>
+                            <option selected disabled>Filtrar por categoria Filho</option>
+                        </select>
+                    </div>
+                    <div class="input-group w-25 d-flex ml-3 d-flex justify-content-md-center align-itens-center">
+                        <button name="buscar" type="submit" class="btn btn-primary">Buscar</button>
+                    </div>
+                </form>
+            </fieldset>
             <table class="table table-borderless shadow border-radius p-5 align-middle">
                 <thead class="border-radius fundo_thead">
                     <tr class="fundo_thead">

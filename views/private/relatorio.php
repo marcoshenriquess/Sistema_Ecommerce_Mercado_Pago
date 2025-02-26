@@ -12,23 +12,34 @@ require_once('../../public/vendor/autoload.php');
 
 if ($_GET['id'] == 1) {
     $ProdutosCont = new ProdutoControll();
-    $List = $ProdutosCont->ListaAllProduto();
+    $aux = "";
+    $List = $ProdutosCont->ListaAllProduto($aux);
 
     if ($List > 0) {
         $html = "<table style='width: 100%' border='1'>";
 
         $html .= "<tr>";
         $html .= "<th style='text-align: center;' > ID </th>";
-        $html .= "<th style='text-align: left;' > NOME </th>";
+        $html .= "<th style='text-align: left; width: 350px;' > NOME </th>";
         $html .= "<th style='text-align: center;' > VALOR </th>";
+        $html .= "<th style='text-align: center;' > DESCONTO </th>";
+        $html .= "<th style='text-align: center; width: 250px;' > VALOR COM DESCONTO</th>";
         $html .= "<th style='text-align: center;' > QUANTIDADE </th>";
         $html .= "<tr' >";
         foreach ($List as $prod) {
             $html .= "<tr class=''>";
             $html .= "<td>" . htmlspecialchars($prod['prod_id']) . "</td>";
             $html .= "<td>" . htmlspecialchars($prod['prod_nome']) . "</td>";
-            $html .= "<td style='text-align: center;'>" . htmlspecialchars($prod['prod_venda']) . "</td>";
-            $html .= "<td style='text-align: center;'>" . htmlspecialchars($prod['prod_quantidade']) . "</td>";
+            $html .= "<td style='text-align: center;'>R$ " . htmlspecialchars($prod['prod_venda']) . "</td>";
+            $html .= "<td style='text-align: center;'>" . htmlspecialchars($prod['prod_desconto']) . "% </td>";
+            if($prod['prod_desconto'] > 0){
+                $ValorDesconto = ($prod['prod_desconto'] / 100) * $prod['prod_venda'];
+                $Result = $prod['prod_venda'] - $ValorDesconto;
+                $html .= "<td style='text-align: center;'>R$ " . htmlspecialchars($Result) . "</td>";
+            } else {
+                $html .= "<td style='text-align: center;'>R$ " . htmlspecialchars($prod['prod_venda']) . "</td>";
+            }
+            $html .= "<td style='text-align: center;'>" . htmlspecialchars($prod['prod_estoque']) . "</td>";
             $html .= "</tr>";
         }
         $html .= "</table>";
@@ -37,7 +48,7 @@ if ($_GET['id'] == 1) {
 
         $dompdf = new Dompdf();
         $dompdf->loadhtml($html);
-        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setPaper('A4', 'landscape');
 
         $dompdf->render();
         $dompdf->stream();

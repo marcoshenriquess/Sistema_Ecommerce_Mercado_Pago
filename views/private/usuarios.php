@@ -34,9 +34,9 @@ $List = $UsuarioCont->ListaUsuarioControll();
             <div class="w-100 m-3">
                 <a class="btn btn-primary" href="cadastrar-usuario.php">Cadastrar novo Usuário</a>
             </div>
-            <table class="table">
-                <thead >
-                    <tr>
+            <table class="table table-borderless shadow border-radius p-5 align-middle">
+                <thead class="border-radius fundo_thead">
+                    <tr class="fundo_thead">
                         <th scope="col">Nome</th>
                         <th scope="col">Email</th>
                         <th scope="col">Cidade</th>

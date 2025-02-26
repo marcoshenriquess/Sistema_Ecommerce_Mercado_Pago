@@ -212,6 +212,108 @@ class ProdutoModel
 
 
 
+    public function ProdutosFiltrados($nomeProd, $ordPor, $catPai, $catFilho)
+    {
+        try {
+            $db = new Database();
+            $this->conn = $db->getConnection();
+
+            $sql = " SELECT 
+                        p.prod_id,
+                        p.prod_nome,
+                        p.prod_descricao,
+                        p.prod_imagem,
+                        cf.catFilho_nome,
+                        cp.catPai_nome,
+                        cf.catFilho_id,
+                        cp.catPai_id,
+                        m.marc_nome,
+                        p.prod_tamanho,
+                        p.prod_estoque,
+                        p.prod_custo,
+                        p.prod_venda,
+                        p.prod_desconto,
+                        p.prod_avaliacao,
+                        p.prod_quantidadeVenda,
+                        u.usu_nome AS vendedor_nome,
+                        p.prod_dt_ini,
+                        p.prod_status,
+                        p.prod_dt_exc
+                    FROM 
+                        produtos p
+                    INNER JOIN 
+                        usuario u ON p.prod_usu_cad = u.usu_id  
+                    INNER JOIN
+                        Categoria_Pai cp ON p.prod_categoria_pai = cp.catPai_id
+                    INNER JOIN
+                        Categoria_Filho cf ON p.prod_categoria_filho = cf.catFilho_id
+                    INNER JOIN
+                        Marca m ON p.prod_marca = m.marc_id
+                    WHERE 
+                        p.prod_status = 1";
+
+            if ($nomeProd != "" || $ordPor != null || $catPai != null || $catFilho != null) {
+
+                if ($nomeProd != "") {
+                    $sql .= " AND p.prod_nome LIKE :nome";
+                }
+                if($catPai != null){
+                    $sql .= " AND cp.catPai_id = :cat_pai";
+                }
+                if($catFilho != null){
+                    $sql .= " AND cf.catFilho_id = :cat_filho";
+                }
+                if ($ordPor != 0) {
+                    switch ($ordPor) {
+                        case 1:
+                            $sql .= " ORDER BY p.prod_venda ASC";
+                            break;
+                        case 2:
+                            $sql .= " ORDER BY p.prod_venda DESC";
+                            break;
+                        case 3:
+                            $sql .= " ORDER BY p.prod_nome ASC";
+                            break;
+                        case 4:
+                            $sql .= " ORDER BY p.prod_nome DESC";
+                            break;
+                        case 5:
+                            $sql .= " ORDER BY p.prod_estoque ASC";
+                            break;
+                        case 6:
+                            $sql .= " ORDER BY p.prod_estoque DESC";
+                            break;
+                    }
+                }
+
+
+                $stmt = $this->conn->prepare($sql);
+
+                if ($nomeProd != "") {
+                    $stmt->bindValue(":nome", '%' . $nomeProd . '%', PDO::PARAM_STR);
+                }
+                if($catPai != null){
+                    $stmt->bindValue(":cat_pai", $catPai, PDO::PARAM_INT);
+                }
+                if($catFilho != null){
+                    $stmt->bindValue(":cat_filho", $catFilho, PDO::PARAM_INT);
+                }
+                
+                $stmt->execute();
+            } else {
+                $stmt = $this->conn->query($sql);
+            }
+
+            $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+            $stmt->closeCursor();
+
+            return $produtos;
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        }
+    }
     public function ListaAllProduto()
     {
         try {
@@ -248,13 +350,11 @@ class ProdutoModel
                     INNER JOIN
                         Marca m ON p.prod_marca = m.marc_id
                     WHERE 
-                        p.prod_status = 1;";
+                        p.prod_status = 1";
 
             $stmt = $this->conn->query($sql);
-            $stmt->execute();
+
             $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
 
             $stmt->closeCursor();
 
@@ -269,24 +369,37 @@ class ProdutoModel
             $db = new Database();
             $this->conn = $db->getConnection();
 
-            $sql = " SELECT prod_id,
-                        produtos.prod_nome, 
-                        Tipos_Produtos.tipo_prod_nome,
-                        produtos.prod_descricao, 
-                        produtos.prod_custo, 
-                        produtos.prod_venda, 
-                        produtos.prod_estoque,
-                        produtos.prod_desconto,
-                        produtos.prod_imagem, 
-                        produtos.prod_dt_ini, 
-                        usuario.usu_nome AS vendedor_nome
+            $sql = " SELECT 
+                        p.prod_id,
+                        p.prod_nome,
+                        p.prod_descricao,
+                        p.prod_imagem,
+                        cf.catFilho_nome,
+                        cp.catPai_nome,
+                        m.marc_nome,
+                        p.prod_tamanho,
+                        p.prod_estoque,
+                        p.prod_custo,
+                        p.prod_venda,
+                        p.prod_desconto,
+                        p.prod_avaliacao,
+                        p.prod_quantidadeVenda,
+                        u.usu_nome AS vendedor_nome,
+                        p.prod_dt_ini,
+                        p.prod_status,
+                        p.prod_dt_exc
                     FROM 
-                        produtos
+                        produtos p
                     INNER JOIN 
-                        Tipos_Produtos ON produtos.prod_tipo = Tipos_Produtos.id_tipo_prod  
-                    INNER JOIN 
-                        usuario ON produtos.prod_usu_cad = usuario.usu_id
-                        WHERE prod_status = 1;
+                        usuario u ON p.prod_usu_cad = u.usu_id  
+                    INNER JOIN
+                        Categoria_Pai cp ON p.prod_categoria_pai = cp.catPai_id
+                    INNER JOIN
+                        Categoria_Filho cf ON p.prod_categoria_filho = cf.catFilho_id
+                    INNER JOIN
+                        Marca m ON p.prod_marca = m.marc_id
+                    WHERE 
+                        p.prod_status = 1;
                     ";
 
             $stmt = $this->conn->query($sql);
@@ -306,9 +419,11 @@ class ProdutoModel
             $this->conn = $db->getConnection();
 
             $limite = 8;
-            $inicio = $pag * $limite;
+            $pagina = is_numeric($pag) ? (int) $pag : 0; // Garante que seja um número
+            $inicio = $pagina * $limite;
 
-            $sql = " SELECT prod_id,
+            $sql = "SELECT 
+                        prod_id,
                         prod_nome,
                         prod_descricao,
                         prod_imagem,
@@ -332,16 +447,33 @@ class ProdutoModel
                     INNER JOIN 
                         usuario u ON produtos.prod_usu_cad = u.usu_id  
                     INNER JOIN
-                        Categoria_Pai cp ON prod_categoria_pai = cp.catPai_id
+                        Categoria_Pai cp ON produtos.prod_categoria_pai = cp.catPai_id
                     INNER JOIN
-                        Categoria_Filho cf ON prod_categoria_filho = cf.catFilho_id
+                        Categoria_Filho cf ON produtos.prod_categoria_filho = cf.catFilho_id
                     INNER JOIN
-                        Marca m ON prod_marca = m.marc_id
-                        WHERE prod_status = 1 ORDER BY prod_id OFFSET :pagina ROWS FETCH NEXT 8 ROWS ONLY;
-                    ";
+                        Marca m ON produtos.prod_marca = m.marc_id
+                    WHERE produtos.prod_status = 1";
+
+            // // Adiciona filtro, se existir
+            // if (!empty($filter)) {
+            //     $sql .= " AND produtos.prod_nome LIKE :filtro";
+            // }
+
+            // // Paginação correta para SQL Server
+            $sql .= " ORDER BY produtos.prod_id OFFSET :pagina ROWS FETCH NEXT :limite ROWS ONLY";
+
 
             $stmt = $this->conn->prepare($sql);
+
+            // // Bind do filtro, se necessário
+            // if (!empty($filter)) {
+            //     $stmt->bindValue(":filtro", "%{$filter}%", PDO::PARAM_STR);
+            // }
+
+            // Bind de paginação
+            $stmt->bindValue(":limite", $limite, PDO::PARAM_INT);
             $stmt->bindValue(":pagina", $inicio, PDO::PARAM_INT);
+
             $stmt->execute();
 
             $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -550,7 +682,7 @@ class ProdutoModel
             $sql = "UPDATE produtos SET	prod_nome = :nome, prod_tipo = :prod_tipo, prod_custo = :preco_custo, prod_venda = :preco_venda, prod_descricao = :descricao, prod_desconto = :desconto, prod_estoque = :quantidade, prod_imagem = :imagem, prod_usu_cad = :id_vendedor, prod_dt_ini = GETDATE() WHERE prod_id = $idProd";
             $stmt = $this->conn->prepare($sql);
 
-            
+
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(":Nome", $dados->getNome(), PDO::PARAM_STR);
             $stmt->bindValue(":Descricao", $dados->getDescricao(), PDO::PARAM_STR);
@@ -624,7 +756,7 @@ class ProdutoModel
             $this->conn = $db->getConnection();
 
             $sql = 'UPDATE produtos set prod_estoque = :qntdeAlterar where prod_id = :id;';
-            $stmt = $this->conn->prepare( $sql);
+            $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->bindValue(':qntdeAlterar', $qntde, PDO::PARAM_INT);
             $stmt->execute();
