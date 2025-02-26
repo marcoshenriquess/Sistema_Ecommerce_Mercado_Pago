@@ -122,7 +122,7 @@ $TotalPags = $MaxPag / 8;
                     </div>
                 </form>
             </fieldset>
-            <p>Total de vendas: <?=count($List) ?></p>
+            <p>Total de produtos: <?=count($Prods_get) ?></p>
             <table class="table table-borderless shadow border-radius p-5 align-middle">
                 <thead class="border-radius fundo_thead">
                     <tr class="fundo_thead">
@@ -163,7 +163,7 @@ $TotalPags = $MaxPag / 8;
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-end">
                         <?php if ($pagina > 0) { ?>
-                            <li class="page-item"><a class="page-link" href="?pagina=<?= $pagina - 1 ?>">Voltar</a></li>
+                            <li class="page-item"><a class="page-link text-white bg-primary" href="?pagina=<?= $pagina - 1 ?>">Voltar</a></li>
                         <?php } else { ?>
                             <li class="page-item disabled"><a class="page-link" href="?pagina=<?= $pagina - 1 ?>">Voltar</a></li>
                         <?php } ?>
@@ -173,7 +173,7 @@ $TotalPags = $MaxPag / 8;
                         </li>
 
                         <?php if ($pagina + 1 < $TotalPags) { ?>
-                            <li class="page-item"><a class="page-link" href="?pagina=<?= $pagina + 1 ?>">Proximo</a></li>
+                            <li class="page-item"><a class="page-link text-white bg-primary" href="?pagina=<?= $pagina + 1 ?>">Proximo</a></li>
                         <?php } else { ?>
                             <li class="page-item disabled"><a class="page-link" href="?pagina=<?= $pagina + 1 ?>">Proximo</a></li>
                         <?php } ?>
