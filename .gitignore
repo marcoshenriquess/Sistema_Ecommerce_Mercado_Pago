@@ -1,0 +1,5 @@
+# vendor/
+.vscode/
+vscode/
+database/banco.php
+banco.php
