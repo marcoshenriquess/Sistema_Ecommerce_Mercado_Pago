@@ -39,8 +39,13 @@ class ProdutoControll
     public function CadastroProdutoControll($produtos)
     {
         $AuxProduto = new ProdutoModel();
-        $AuxProduto->CadastrarProdutos($produtos);
-        header('Location: produtos.php');
+        $err = $AuxProduto->CadastrarProdutos($produtos);
+        if($err == false){
+            header('Location: produtos.php');
+        } else {
+            var_dump( $err);exit();
+            return  $err;
+        }
     }
     public function AlterarProdutoControll($produtos, $idUsu, $idProd)
     {

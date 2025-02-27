@@ -135,10 +135,10 @@ class VendaModel
                 if ($ordPor != 0) {
                     switch ($ordPor) {
                         case 1:
-                            $sql .= " ORDER BY venda.ven_valor ASC";
+                            $sql .= " ORDER BY ven_valor ASC";
                             break;
                         case 2:
-                            $sql .= " ORDER BY venda.ven_valor DESC";
+                            $sql .= " ORDER BY ven_valor DESC";
                             break;
                         case 3:
                             $sql .= " ORDER BY usuario.usu_nome ASC";
@@ -249,7 +249,7 @@ class VendaModel
             $stmt->bindValue(':id_prod', $id_prod, PDO::PARAM_INT);
             $stmt->bindValue(':id_usu', $user, PDO::PARAM_INT);
             $stmt->bindValue(':quantidade', $quantidade, PDO::PARAM_INT);
-            $stmt->bindValue(':valor', $valor, PDO::PARAM_INT);
+            $stmt->bindValue(':valor', $VentaValor, PDO::PARAM_INT);
             $stmt->bindValue(':cod_venda', $codigo_venda, PDO::PARAM_STR);
             $stmt->execute();
             $stmt->closeCursor();

@@ -16,7 +16,7 @@ if(($Dados) and ($Dados->rowCount() != 0)){
     
     fwrite($resultado, "\xEF\xBB\xBF");
 
-    $cabecalho = ['ID', 'Nome', 'Descricao', 'Imagem', 'Categoria Pai','Categoria Filho', 'Marca','tamanho', 'estoque','custo', 'venda','desconto','avaliacao','quantidade de Venda','Vendedor', 'data cadastro', 'status', 'data exclusão'];
+    $cabecalho = ['ID', 'Nome', 'Descricao', 'Imagem', 'Categoria Pai_ID','Categoria Filho_ID', 'Categoria Pai','Categoria Filho','Marca_id', 'Marca','tamanho', 'estoque','custo', 'venda','desconto','avaliacao','quantidade de Venda','Vendedor', 'data cadastro', 'status', 'data exclusão'];
     fputcsv($resultado, $cabecalho, ';');
 
     $aux = "";

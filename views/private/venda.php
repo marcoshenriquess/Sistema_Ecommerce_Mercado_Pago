@@ -138,17 +138,14 @@ if (isset($_GET['pagina'])) {
                         </tr>
                     </thead>
                     <tbody class="m-2">
-                        <?php foreach ($List as $usuario): ?>
+                        <?php foreach ($List as $venda): ?>
                             <tr>
-                                <th><?= $usuario['cod_venda'] ?></th>
-                                <th><?= $usuario['usu_nome'] ?></th>
-                                <td style="max-width: 15ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= $usuario['prod_nome'] ?></td>
-                                <td><?= $usuario['ven_quantidade'] ?></td>
-                                <td>R$ &nbsp;<?php
-                                                $Total = $usuario['ven_valor'] * $usuario['ven_quantidade'];
-                                                echo number_format($Total, 2, ',', '.')
-                                                ?></td>
-                                <td><?= $usuario['ven_dt'] ?></td>
+                                <th><?= $venda['cod_venda'] ?></th>
+                                <th><?= $venda['usu_nome'] ?></th>
+                                <td style="max-width: 15ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= $venda['prod_nome'] ?></td>
+                                <td><?= $venda['ven_quantidade'] ?></td>
+                                <td>R$ &nbsp;<?php echo number_format($venda['ven_valor'], 2, ',', '.') ?></td>
+                                <td><?= $venda['ven_dt'] ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
